@@ -1,0 +1,4 @@
+docker/data
+celerybeat-schedule
+.idea
+__pycache__
