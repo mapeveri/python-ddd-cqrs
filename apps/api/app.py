@@ -8,6 +8,7 @@ from src.shared.infrastructure.celery.configuration import configure_celery
 from src.marketplace.event.infrastructure.ui.rest import views as events_views
 from src.shared.infrastructure.di.container import DI
 from src.shared.infrastructure.bus.register import register_commands, register_queries, register_events
+from src.shared.infrastructure.persistence.sqlalchemy.registry import mapper_shared_context_tables
 
 app = Flask(__name__)
 app.config.from_object('apps.api.conf.config')
@@ -22,6 +23,7 @@ Migrate(app, db)
 es = Elasticsearch(app.config['ELASTICSEARCH_URL'])
 
 mapper_event_context_tables()
+mapper_shared_context_tables()
 
 container = DI(app=app, db=db, es=es)
 container.wire(

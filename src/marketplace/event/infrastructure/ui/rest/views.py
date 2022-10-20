@@ -4,16 +4,34 @@ from flask import Blueprint, jsonify, request
 from werkzeug.wrappers import Response
 
 from src.marketplace.event.infrastructure.ui.rest.controllers.events_get_controller import EventsGetController
+from src.marketplace.event.infrastructure.ui.rest.controllers.events_post_controller import EventsPostController
 from src.shared.domain.exceptions import InvalidParameter
 
 blueprint = Blueprint("events_routes", __name__)
 
 events_get_controller = EventsGetController()
+events_post_controller = EventsPostController()
 
 
 @blueprint.route("/")
 def health_check() -> Response:
     return "<p>OK</p>"
+
+
+@blueprint.route("/create-event", methods=["POST"])
+def create_event() -> Tuple[Any, int]:
+    try:
+        events_post_controller(request.json)
+        response = jsonify({"data": "OK"})
+        code = 201
+    except Exception as e:
+        code = 500
+        response = jsonify({"data": None, "error": {
+            "code": code,
+            "message": str(e)
+        }})
+
+    return response, code
 
 
 @blueprint.route("/search", methods=["GET"])
