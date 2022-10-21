@@ -14,6 +14,10 @@ class DomainEvent(ABC):
         self.event_id = Uuid.next()
         self.occurred_on = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    @staticmethod
+    def event_name() -> str:
+        ...
+
     @classmethod
     def name(cls):
         return cls.__name__

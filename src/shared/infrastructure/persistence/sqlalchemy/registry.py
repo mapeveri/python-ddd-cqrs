@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Table, Column, String, Text, DateTime
 from sqlalchemy.orm import registry
 
-from src.shared.domain.outbox import Outbox
+from src.shared.domain.outbox.outbox import Outbox
 from src.shared.infrastructure.persistence.sqlalchemy.decorators.outbox_id_decorator import OutboxIdDecorator
 
 mapper_registry = registry()

@@ -16,7 +16,7 @@ class CreateEventCommandHandler(CommandHandler):
     event_bus: EventBus
 
     def __call__(self, command: CreateEventCommand) -> None:
-        eventId = EventId(command.id)
+        event_id = EventId(command.id)
         provider_id = command.provider_id
         mode = Mode(command.mode)
         provider_organizer_company_id = command.provider_organizer_company_id
@@ -31,7 +31,7 @@ class CreateEventCommandHandler(CommandHandler):
         zones = command.zones
 
         event = Event.create(
-            eventId,
+            event_id,
             provider_id,
             mode,
             provider_organizer_company_id,

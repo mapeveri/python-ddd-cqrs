@@ -44,6 +44,10 @@ class EventUpdatedDomainEvent(DomainEvent):
         self.sold_out = sold_out
         self.zones = zones
 
+    @staticmethod
+    def event_name() -> str:
+        return 'marketplace.v1.event.domain_event.event_updated_domain_event'
+
     def __eq__(self, other):
         return self.aggregate_id == other.aggregate_id and \
             self.provider_id == other.provider_id and \
