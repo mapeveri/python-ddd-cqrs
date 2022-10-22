@@ -19,5 +19,5 @@ class OutboxRepository(metaclass=abc.ABCMeta):
         ...
 
     @abc.abstractmethod
-    def find_all_by_order_by_created_at_asc(self) -> List[Outbox]:
+    def find_by_order_by_created_at_asc(self) -> List[Outbox]:
         ...

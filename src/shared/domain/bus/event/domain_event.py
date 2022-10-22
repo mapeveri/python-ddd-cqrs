@@ -23,6 +23,10 @@ class DomainEvent(ABC):
     def event_name() -> str:
         ...
 
+    @staticmethod
+    def aggregate_type() -> str:
+        ...
+
     @classmethod
     def name(cls):
         return cls.__name__

@@ -9,7 +9,7 @@ class Price:
         self.amount = amount
 
     @staticmethod
-    def _validate_price(amount):
+    def _validate_price(amount: float):
         if amount < 0:
             raise PriceException('Invalid price')
 

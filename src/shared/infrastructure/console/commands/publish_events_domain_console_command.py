@@ -3,6 +3,7 @@ from pydoc import locate
 
 import click
 from dependency_injector.wiring import inject, Provide
+from flask_sqlalchemy import SQLAlchemy
 
 from src.shared.domain.bus.event.event_bus import EventBus
 from src.shared.domain.outbox.outbox_repository import OutboxRepository
@@ -13,9 +14,11 @@ from src.shared.infrastructure.di.container import DI
 @inject
 def publish_events_console_command(
         outbox_repository: OutboxRepository = Provide[DI.outbox_repository],
-        event_bus: EventBus = Provide[DI.event_bus]
+        event_bus: EventBus = Provide[DI.event_bus],
+        db: SQLAlchemy = Provide['db']
 ) -> None:
-    outbox_events = outbox_repository.find_all_by_order_by_created_at_asc()
+    outbox_events = outbox_repository.find_by_order_by_created_at_asc()
+
     for outbox_event in outbox_events:
         domain_event = outbox_event.type
         payload = json.loads(outbox_event.payload)
@@ -24,4 +27,11 @@ def publish_events_console_command(
         event = klass.from_primitives(payload)
         event_bus.execute_handler(event)
 
-        outbox_repository.remove(outbox_event.id)
+        try:
+            db.session.begin()
+            outbox_repository.remove(outbox_event.id)
+            db.session.commit()
+        except Exception as e:
+            print("Error publish_events_console_command")
+            db.session.rollback()
+            raise Exception(e)

@@ -19,7 +19,7 @@ class MemoryCommandBus(CommandBus):
 
     def dispatch(self, command: Command):
         try:
-            self.db.session.begin_nested()
+            self.db.session.begin()
             self.handlers[command.name()](command)
             self.db.session.commit()
         except Exception as e:

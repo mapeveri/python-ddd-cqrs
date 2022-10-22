@@ -37,7 +37,7 @@ class EventProjectionOnEventUpdatedDomainEventHandler(EventHandler):
             zone['id'],
             zone['provider_zone_id'],
             zone['capacity'],
-            zone['price'],
+            float(zone['price']),
             zone['name'],
             zone['numbered'],
             event_id

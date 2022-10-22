@@ -17,7 +17,7 @@ app.config.from_object('apps.api.conf.config')
 celery = configure_celery(app)
 app.celery = celery
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={'autocommit': True})
 app.db = db
 Migrate(app, db)
 

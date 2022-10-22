@@ -25,7 +25,7 @@ class MemoryEventBus(EventBus):
         for event in events:
             outbox = Outbox.create(
                 OutboxId(OutboxId.next()),
-                event.name(),
+                event.aggregate_type(),
                 event.aggregate_id,
                 f'{event.__module__}.{event.name()}',
                 json.dumps(vars(event), default=str)

@@ -48,6 +48,10 @@ class EventUpdatedDomainEvent(DomainEvent):
     def event_name() -> str:
         return 'marketplace.v1.event.domain_event.event_updated_domain_event'
 
+    @staticmethod
+    def aggregate_type() -> str:
+        return 'Event'
+
     @classmethod
     def from_primitives(cls, payload: list) -> DomainEvent:
         return cls(

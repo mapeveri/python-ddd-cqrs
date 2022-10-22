@@ -16,11 +16,9 @@ class SqlAlchemyOutboxRepository(OutboxRepository):
     def save(self, outbox: Outbox) -> None:
         self.db.session.add(outbox)
         self.db.session.flush()
-        self.db.session.commit()
 
     def remove(self, outboxId: OutboxId) -> None:
         self.db.session.query(Outbox).filter(Outbox.id == outboxId.id).delete()
-        self.db.session.commit()
 
-    def find_all_by_order_by_created_at_asc(self) -> List[Outbox]:
-        return self.db.session.query(Outbox).order_by(Outbox.created_at.asc())
+    def find_by_order_by_created_at_asc(self) -> List[Outbox]:
+        return self.db.session.query(Outbox).order_by(Outbox.created_at.asc()).limit(100).with_for_update()
