@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from abc import ABC
 
@@ -13,6 +15,17 @@ class DomainEvent(ABC):
         self.aggregate_id = aggregate_id
         self.event_id = Uuid.next()
         self.occurred_on = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    def from_primitives(cls, payload: list) -> DomainEvent:
+        ...
+
+    @staticmethod
+    def event_name() -> str:
+        ...
+
+    @staticmethod
+    def aggregate_type() -> str:
+        ...
 
     @classmethod
     def name(cls):

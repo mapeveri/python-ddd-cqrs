@@ -20,7 +20,5 @@ class SqlAlchemyEventRepository(EventRepository):
             self.db.session.add_all(event.zones)
             self.db.session.flush()
 
-        self.db.session.commit()
-
     def find_by_provider_id(self, provider_id: int) -> Optional[Event]:
         return self.db.session.query(Event).filter_by(provider_id=provider_id).first()

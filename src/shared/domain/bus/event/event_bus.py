@@ -11,5 +11,9 @@ class EventBus(ABC):
         pass
 
     @abstractmethod
+    def execute_handler(self, event: Type[DomainEvent]) -> None:
+        pass
+
+    @abstractmethod
     def publish(self, events: List[DomainEvent]):
         pass

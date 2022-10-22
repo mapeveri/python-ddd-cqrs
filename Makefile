@@ -6,6 +6,9 @@ run-docker-compose: ## Run container on port configured
 run-migrations: ## Run migrations
 	sleep 5 && docker exec -it marketplace-container pipenv run flask --app=apps.api.app db upgrade
 
+run-publish-events: ## Run publish domain events
+	docker exec -it marketplace-container pipenv run flask --app=apps.api.app shared publish-events-console-command
+
 run-events-provider: ## Run celery to get provider events
 	docker exec -it marketplace-container pipenv run celery -A apps.api.app.celery call events.provider.get_events && docker exec -it marketplace-container pipenv run celery -A apps.api.app.celery worker --loglevel=DEBUG
 

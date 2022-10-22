@@ -44,6 +44,30 @@ class EventUpdatedDomainEvent(DomainEvent):
         self.sold_out = sold_out
         self.zones = zones
 
+    @staticmethod
+    def event_name() -> str:
+        return 'marketplace.v1.event.domain_event.event_updated_domain_event'
+
+    @staticmethod
+    def aggregate_type() -> str:
+        return 'Event'
+
+    @classmethod
+    def from_primitives(cls, payload: list) -> DomainEvent:
+        return cls(
+            payload['aggregate_id'],
+            payload['provider_id'],
+            payload['mode'],
+            payload['provider_organizer_company_id'],
+            payload['title'],
+            datetime.fromisoformat(payload['start_date']),
+            datetime.fromisoformat(payload['end_date']),
+            datetime.fromisoformat(payload['sell_from']),
+            datetime.fromisoformat(payload['sell_to']),
+            payload['sold_out'],
+            payload['zones'],
+        )
+
     def __eq__(self, other):
         return self.aggregate_id == other.aggregate_id and \
             self.provider_id == other.provider_id and \

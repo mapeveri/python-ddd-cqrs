@@ -22,6 +22,8 @@ from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqla
 from src.shared.infrastructure.bus.memory_command_bus import MemoryCommandBus
 from src.shared.infrastructure.bus.memory_event_bus import MemoryEventBus
 from src.shared.infrastructure.bus.memory_query_bus import MemoryQueryBus
+from src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository import \
+    SqlAlchemyOutboxRepository
 
 
 class DI(containers.DeclarativeContainer):
@@ -31,13 +33,14 @@ class DI(containers.DeclarativeContainer):
     db = providers.Dependency(instance_of=SQLAlchemy)
     es = providers.Dependency(instance_of=Elasticsearch)
 
-    query_bus = providers.Singleton(MemoryQueryBus)
-    command_bus = providers.Singleton(MemoryCommandBus)
-    event_bus = providers.Singleton(MemoryEventBus)
-
+    outbox_repository = providers.Factory(SqlAlchemyOutboxRepository)
     event_repository = providers.Factory(SqlAlchemyEventRepository)
     event_response_repository = providers.Factory(ElasticsearchEventResponseRepository)
     zone_repository = providers.Factory(SqlAlchemyZoneRepository)
+
+    query_bus = providers.Singleton(MemoryQueryBus)
+    command_bus = providers.Singleton(MemoryCommandBus)
+    event_bus = providers.Singleton(MemoryEventBus, outbox_repository=outbox_repository)
 
     create_event_command_handler = providers.Factory(CreateEventCommandHandler, repository=event_repository,
                                                      event_bus=event_bus)
