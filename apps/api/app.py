@@ -31,13 +31,13 @@ container.wire(
     modules=[
         'src.shared.infrastructure.api_controller',
         'src.shared.infrastructure.bus.register',
-        'src.shared.infrastructure.bus.memory_command_bus',
         'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_event_repository',
         'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository',
         'src.marketplace.event.infrastructure.persistence.elasticsearch.repository'
         '.elasticsearch_event_response_repository',
         'src.marketplace.event.infrastructure.services.events_provider.process_events_provider',
         'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository',
+        'src.shared.infrastructure.persistence.sqlalchemy.utils.transactions',
         'src.shared.infrastructure.console.commands.publish_events_domain_console_command'
     ],
 )

@@ -3,11 +3,12 @@ from pydoc import locate
 
 import click
 from dependency_injector.wiring import inject, Provide
-from flask_sqlalchemy import SQLAlchemy
 
 from src.shared.domain.bus.event.event_bus import EventBus
+from src.shared.domain.outbox.outbox import Outbox
 from src.shared.domain.outbox.outbox_repository import OutboxRepository
 from src.shared.infrastructure.di.container import DI
+from src.shared.infrastructure.persistence.sqlalchemy.utils.transactions import transactional
 
 
 @click.command()
@@ -15,8 +16,11 @@ from src.shared.infrastructure.di.container import DI
 def publish_events_console_command(
         outbox_repository: OutboxRepository = Provide[DI.outbox_repository],
         event_bus: EventBus = Provide[DI.event_bus],
-        db: SQLAlchemy = Provide['db']
 ) -> None:
+    @transactional
+    def remove_outbox_event(outbox_event: Outbox) -> None:
+        outbox_repository.remove(outbox_event.id)
+
     outbox_events = outbox_repository.find_by_order_by_created_at_asc()
 
     for outbox_event in outbox_events:
@@ -27,11 +31,4 @@ def publish_events_console_command(
         event = klass.from_primitives(payload)
         event_bus.execute_handler(event)
 
-        try:
-            db.session.begin()
-            outbox_repository.remove(outbox_event.id)
-            db.session.commit()
-        except Exception as e:
-            print("Error publish_events_console_command")
-            db.session.rollback()
-            raise Exception(e)
+        remove_outbox_event(outbox_event)
