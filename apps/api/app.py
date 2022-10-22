@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from src.marketplace.event.infrastructure.persistence.sqlalchemy.registry.registry import mapper_event_context_tables
+from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.celery.configuration import configure_celery
 from src.marketplace.event.infrastructure.ui.rest import views as events_views
 from src.shared.infrastructure.di.container import DI
@@ -30,12 +31,14 @@ container.wire(
     modules=[
         'src.shared.infrastructure.api_controller',
         'src.shared.infrastructure.bus.register',
+        'src.shared.infrastructure.bus.memory_command_bus',
         'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_event_repository',
         'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository',
         'src.marketplace.event.infrastructure.persistence.elasticsearch.repository'
         '.elasticsearch_event_response_repository',
         'src.marketplace.event.infrastructure.services.events_provider.process_events_provider',
-        'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository'
+        'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository',
+        'src.shared.infrastructure.console.commands.publish_events_domain_console_command'
     ],
 )
 app.container = container
@@ -45,3 +48,4 @@ register_queries()
 register_events()
 
 app.register_blueprint(events_views.blueprint)
+app.register_blueprint(shared_blueprint.blueprint)

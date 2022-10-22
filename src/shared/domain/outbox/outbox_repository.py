@@ -2,6 +2,7 @@ import abc
 from typing import List
 
 from src.shared.domain.outbox.outbox import Outbox
+from src.shared.domain.value_objects.outbox_id import OutboxId
 
 
 class OutboxRepository(metaclass=abc.ABCMeta):
@@ -11,6 +12,10 @@ class OutboxRepository(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def save(self, outbox: Outbox) -> None:
+        ...
+
+    @abc.abstractmethod
+    def remove(self, outboxId: OutboxId) -> None:
         ...
 
     @abc.abstractmethod

@@ -18,17 +18,17 @@ class MemoryEventBus(EventBus):
     def register(self, event: Type[DomainEvent], handler: Type[EventHandler]):
         self.handlers[event.name()] = handler
 
+    def execute_handler(self, event: Type[DomainEvent]) -> None:
+        self.handlers[event.name()](event)
+
     def publish(self, events: List[DomainEvent]):
         for event in events:
-            try:
-                self.handlers[event.name()](event)
-            except Exception:
-                outbox = Outbox.create(
-                    OutboxId(OutboxId.next()),
-                    event.name(),
-                    event.aggregate_id,
-                    event.name(),
-                    json.dumps(vars(event), default=str)
-                )
+            outbox = Outbox.create(
+                OutboxId(OutboxId.next()),
+                event.name(),
+                event.aggregate_id,
+                f'{event.__module__}.{event.name()}',
+                json.dumps(vars(event), default=str)
+            )
 
-                self.outbox_repository.save(outbox)
+            self.outbox_repository.save(outbox)
