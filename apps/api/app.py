@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from src.marketplace.event.infrastructure.persistence.sqlalchemy.registry.registry import mapper_event_context_tables
 from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.celery.configuration import configure_celery
-from src.marketplace.event.infrastructure.ui.rest import views as events_views
+from src.marketplace.event.infrastructure import event_blueprint
 from src.shared.infrastructure.di.container import DI
 from src.shared.infrastructure.bus.register import register_commands, register_queries, register_events
 from src.shared.infrastructure.persistence.sqlalchemy.registry import mapper_shared_context_tables
@@ -26,7 +26,7 @@ es = Elasticsearch(app.config['ELASTICSEARCH_URL'])
 mapper_event_context_tables()
 mapper_shared_context_tables()
 
-container = DI(app=app, db=db, es=es)
+container = DI(app=app, db=db, es=es, celery=celery)
 container.wire(
     modules=[
         'src.shared.infrastructure.api_controller',
@@ -47,5 +47,5 @@ register_commands()
 register_queries()
 register_events()
 
-app.register_blueprint(events_views.blueprint)
+app.register_blueprint(event_blueprint.blueprint)
 app.register_blueprint(shared_blueprint.blueprint)

@@ -2,8 +2,6 @@ from flask import Flask
 from celery import Celery
 from celery.schedules import crontab
 
-from src.marketplace.event.infrastructure.celery.tasks import celery_tasks_events
-
 
 def configure_celery(app: Flask) -> Celery:
     celery = Celery(
@@ -11,7 +9,9 @@ def configure_celery(app: Flask) -> Celery:
         backend=app.config["RESULT_BACKEND"],
         broker=app.config["CELERY_BROKER_URL"],
     )
+
     celery.conf.update(app.config)
+    celery.autodiscover_tasks(['src.marketplace.event.infrastructure.celery.tasks'])
 
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
@@ -19,12 +19,6 @@ def configure_celery(app: Flask) -> Celery:
                 return self.run(*args, **kwargs)
 
     celery.Task = ContextTask
-
-    @celery.on_after_configure.connect
-    def setup_periodic_tasks(sender, **kwargs):
-        pass
-
-    celery_tasks_events(celery)
 
     celery.conf.beat_schedule = {
         'get-events-every-day-2-am': {

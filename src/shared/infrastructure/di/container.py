@@ -1,3 +1,4 @@
+from celery import Celery
 from dependency_injector import containers, providers
 from elasticsearch import Elasticsearch
 from flask import Flask
@@ -32,6 +33,7 @@ class DI(containers.DeclarativeContainer):
     app = providers.Dependency(instance_of=Flask)
     db = providers.Dependency(instance_of=SQLAlchemy)
     es = providers.Dependency(instance_of=Elasticsearch)
+    celery = providers.Dependency(instance_of=Celery)
 
     outbox_repository = providers.Factory(SqlAlchemyOutboxRepository)
     event_repository = providers.Factory(SqlAlchemyEventRepository)

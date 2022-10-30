@@ -1,24 +1,20 @@
 from typing import Tuple, Any
 
-from flask import Blueprint, jsonify, request
+from flask import jsonify, request
 from werkzeug.wrappers import Response
 
 from src.marketplace.event.infrastructure.ui.rest.controllers.events_get_controller import EventsGetController
 from src.marketplace.event.infrastructure.ui.rest.controllers.events_post_controller import EventsPostController
 from src.shared.domain.exceptions import InvalidParameter
 
-blueprint = Blueprint("events_routes", __name__)
-
 events_get_controller = EventsGetController()
 events_post_controller = EventsPostController()
 
 
-@blueprint.route("/")
 def health_check() -> Response:
     return "<p>OK</p>"
 
 
-@blueprint.route("/create-event", methods=["POST"])
 def create_event() -> Tuple[Any, int]:
     try:
         events_post_controller(request.json)
@@ -34,7 +30,6 @@ def create_event() -> Tuple[Any, int]:
     return response, code
 
 
-@blueprint.route("/search", methods=["GET"])
 def get_events() -> Tuple[Any, int]:
     try:
         events = events_get_controller(request.args)
