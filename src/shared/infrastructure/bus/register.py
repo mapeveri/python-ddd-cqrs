@@ -48,3 +48,9 @@ def register_events(
 ):
     event_bus.register(EventCreatedDomainEvent, event_projection_on_event_created_domain_event_handler)
     event_bus.register(EventUpdatedDomainEvent, event_projection_on_event_updated_domain_event_handler)
+
+
+def configure_buses() -> None:
+    register_commands()
+    register_queries()
+    register_events()

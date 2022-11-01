@@ -3,13 +3,17 @@ from celery import Celery
 from celery.schedules import crontab
 
 
-def configure_celery(app: Flask) -> Celery:
-    celery = Celery(
-        app.import_name,
-        backend=app.config["RESULT_BACKEND"],
-        broker=app.config["CELERY_BROKER_URL"],
-    )
+def configure_cronjobs() -> dict:
+    return {
+        'get-events-every-day-2-am': {
+            'task': 'events.provider.get_events',
+            'schedule': crontab(minute=0, hour=2),
+        },
+    }
 
+
+def configure_celery(app: Flask) -> Celery:
+    celery = Celery(app.import_name)
     celery.conf.update(app.config)
     celery.autodiscover_tasks(['src.marketplace.event.infrastructure.celery.tasks'])
 
@@ -20,12 +24,7 @@ def configure_celery(app: Flask) -> Celery:
 
     celery.Task = ContextTask
 
-    celery.conf.beat_schedule = {
-        'get-events-every-day-2-am': {
-            'task': 'events.provider.get_events',
-            'schedule': crontab(minute=0, hour=2),
-        },
-    }
+    celery.conf.beat_schedule = configure_cronjobs()
     celery.conf.timezone = 'UTC'
 
     return celery

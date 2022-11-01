@@ -17,10 +17,6 @@ def publish_events_console_command(
         outbox_repository: OutboxRepository = Provide[DI.outbox_repository],
         event_bus: EventBus = Provide[DI.event_bus],
 ) -> None:
-    @transactional
-    def remove_outbox_event(outbox_event: Outbox) -> None:
-        outbox_repository.remove(outbox_event.id)
-
     outbox_events = outbox_repository.find_by_order_by_created_at_asc()
 
     for outbox_event in outbox_events:
@@ -32,3 +28,10 @@ def publish_events_console_command(
         event_bus.execute_handler(event)
 
         remove_outbox_event(outbox_event)
+
+
+@transactional
+@inject
+def remove_outbox_event(outbox_event: Outbox,
+                        outbox_repository: OutboxRepository = Provide[DI.outbox_repository]) -> None:
+    outbox_repository.remove(outbox_event.id)

@@ -24,9 +24,9 @@ Celery task
 
 To run celery worker and beat:
 
-    docker exec -it marketplace-container pipenv run celery -A apps.api.app.celery beat --loglevel=DEBUG
+    docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery beat --loglevel=DEBUG
 
-    docker exec -it marketplace-container pipenv run celery -A apps.api.app.celery worker --loglevel=DEBUG
+    docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery worker --loglevel=DEBUG
 
 
 Events

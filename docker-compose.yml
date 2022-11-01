@@ -5,10 +5,11 @@ services:
         container_name: marketplace-container
         build:
             context: .
+        restart: on-failure
         volumes:
             - ./:/var/www/html/marketplace
         ports:
-            - "5000:5000"
+            - "5000:${FLASK_RUN_PORT}"
         depends_on:
             - rabbitmq
             - db
@@ -16,9 +17,9 @@ services:
     db:
         image: postgres
         environment:
-            POSTGRES_DB: marketplace
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: app123456
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             PGDATA: /var/lib/postgresql/data/pgdata
         volumes:
             - ./docker/data/pgdata:/var/lib/postgresql/data/pgdata
@@ -33,8 +34,8 @@ services:
             - 5630:5672
             - 8090:15672
         environment:
-            - RABBITMQ_DEFAULT_USER=app
-            - RABBITMQ_DEFAULT_PASS=rabbit_app
+            - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+            - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
     elasticsearch:
         container_name: app-elastic
