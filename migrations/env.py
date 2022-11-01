@@ -7,8 +7,6 @@ from flask import current_app
 
 from alembic import context
 
-from src.marketplace.event.infrastructure.persistence.sqlalchemy.mapping.sqlalchemy_event import mapper_registry as event_mapper_registry
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -26,10 +24,7 @@ config.set_main_option(
     'sqlalchemy.url',
     str(current_app.extensions['migrate'].db.get_engine().url).replace(
         '%', '%%'))
-# target_metadata = current_app.extensions['migrate'].db.metadata
-target_metadata = [
-    event_mapper_registry.metadata,
-]
+target_metadata = current_app.extensions['migrate'].db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

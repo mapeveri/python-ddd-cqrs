@@ -1,6 +1,9 @@
 run: ## Run container on port configured
 	docker-compose up -d
 
+generate-migration: ## Generate migration
+	docker exec -it marketplace-container pipenv run flask db migrate
+
 run-migrations: ## Run migrations
 	docker exec -it marketplace-container pipenv run flask db upgrade
 
