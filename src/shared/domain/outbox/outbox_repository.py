@@ -1,15 +1,11 @@
 import abc
-from typing import List
+from typing import List, Protocol
 
 from src.shared.domain.outbox.outbox import Outbox
 from src.shared.domain.value_objects.outbox_id import OutboxId
 
 
-class OutboxRepository(metaclass=abc.ABCMeta):
-
-    def __init__(self):
-        pass
-
+class OutboxRepository(Protocol):
     @abc.abstractmethod
     def save(self, outbox: Outbox) -> None:
         ...

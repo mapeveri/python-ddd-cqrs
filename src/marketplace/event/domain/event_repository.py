@@ -1,14 +1,10 @@
 import abc
-from typing import Optional
+from typing import Optional, Protocol
 
 from src.marketplace.event.domain.event import Event
 
 
-class EventRepository(metaclass=abc.ABCMeta):
-
-    def __init__(self):
-        pass
-
+class EventRepository(Protocol):
     @abc.abstractmethod
     def save(self, event: Event) -> None:
         ...
