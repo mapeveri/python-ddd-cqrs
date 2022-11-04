@@ -37,7 +37,7 @@ class UpdateEventCommandHandler(CommandHandler):
 
         zones = command.zones
         event_zones = self.zone_repository.zones_by_event_id(event.id)
-        event_zones_updated = list(map(self._update_zones, event_zones, zones))
+        event_zones_updated = list(map(self.__update_zones, event_zones, zones))
 
         event.update(
             provider_organizer_company_id,
@@ -54,7 +54,7 @@ class UpdateEventCommandHandler(CommandHandler):
 
         self.event_bus.publish(event.pull_domain_events())
 
-    def _update_zones(self, zone: Zone, zones: Union[list, dict]) -> Zone:
+    def __update_zones(self, zone: Zone, zones: Union[list, dict]) -> Zone:
         try:
             item_zone = next(filter(lambda z: z['provider_zone_id'] == zone.provider_zone_id, zones))
         except TypeError:

@@ -26,9 +26,9 @@ class ProcessEventsProvider:
     def process(self) -> None:
         data = self.http_events_provider()
         events = self.json_parse_events_provider(data)
-        self._upsert_events_provider(events)
+        self.__upsert_events_provider(events)
 
-    def _upsert_events_provider(self, events: List[dict]) -> None:
+    def __upsert_events_provider(self, events: List[dict]) -> None:
         for event in events:
             self.upsert_event_service(
                 event['provider_event_id'],

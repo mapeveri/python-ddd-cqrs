@@ -25,7 +25,7 @@ class JsonParseEventsProvider:
             sold_out = bool(event_attributes['sold_out'])
 
             zones = event_attributes['zone']
-            zones_list = list(map(self._zones, zones))
+            zones_list = list(map(self.__zones, zones))
 
             events.append({
                 'provider_event_id': provider_event_id,
@@ -42,7 +42,7 @@ class JsonParseEventsProvider:
 
         return events
 
-    def _zones(self, zone) -> dict:
+    def __zones(self, zone) -> dict:
         zone_id = int(zone['zone_id'])
         capacity = int(zone['capacity'])
         price = float(zone['price'])

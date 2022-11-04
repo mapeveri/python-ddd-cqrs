@@ -29,7 +29,7 @@ class UpsertEventProvider:
     ):
         event_db = self.query_bus.ask(FindEventByProviderIdQuery(provider_event_id))
         if event_db:
-            self._update(provider_event_id,
+            self.__update(provider_event_id,
                          provider_organizer_company_id,
                          title,
                          event_start_date,
@@ -40,7 +40,7 @@ class UpsertEventProvider:
 
             return
 
-        self._create(provider_event_id,
+        self.__create(provider_event_id,
                      sell_mode,
                      provider_organizer_company_id,
                      title,
@@ -51,7 +51,7 @@ class UpsertEventProvider:
                      sold_out,
                      zone_list)
 
-    def _create(self,
+    def __create(self,
                 provider_event_id: int,
                 sell_mode: str,
                 provider_organizer_company_id:
@@ -78,7 +78,7 @@ class UpsertEventProvider:
             zone_list
         ))
 
-    def _update(self,
+    def __update(self,
                 provider_event_id: int,
                 provider_organizer_company_id:
                 Optional[int],

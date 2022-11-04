@@ -14,7 +14,7 @@ class EventProjectionOnEventCreatedDomainEventHandler(EventHandler):
     event_response_repository: EventResponseRepository
 
     def __call__(self, event: EventCreatedDomainEvent) -> None:
-        zones = list(map(self._create_zone, event.zones, event.aggregate_id))
+        zones = list(map(self.__create_zone, event.zones, event.aggregate_id))
 
         event = Event(
             EventId(event.aggregate_id),
@@ -32,7 +32,7 @@ class EventProjectionOnEventCreatedDomainEventHandler(EventHandler):
 
         self.event_response_repository.save(event)
 
-    def _create_zone(self, zone: dict, event_id: str):
+    def __create_zone(self, zone: dict, event_id: str):
         return Zone.create_from_primitives(
             zone['id'],
             zone['provider_zone_id'],
