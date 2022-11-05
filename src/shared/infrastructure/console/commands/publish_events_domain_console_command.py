@@ -16,7 +16,7 @@ from src.shared.infrastructure.persistence.sqlalchemy.utils.transactions import 
 def publish_events_console_command(
         outbox_repository: OutboxRepository = Provide[DI.outbox_repository],
         event_bus: EventBus = Provide[DI.event_bus],
-) -> None:
+) -> int:
     outbox_events = outbox_repository.find_by_order_by_created_at_asc()
 
     for outbox_event in outbox_events:
@@ -29,6 +29,7 @@ def publish_events_console_command(
 
         remove_outbox_event(outbox_event)
 
+    return 1
 
 @transactional
 @inject
