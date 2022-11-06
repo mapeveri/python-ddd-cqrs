@@ -23,17 +23,16 @@ class EventMapper(Mapper):
             Column('sell_to', DateTime, nullable=False),
             Column('sold_out', Boolean, nullable=False, default=False),
             Index(
-                'uix_provider_unique_null',
-                'provider_id',
-                'provider_organizer_company_id',
-                postgresql_where=text("provider_organizer_company_id IS NULL"),
-                unique=True,
-            ),
-            Index(
                 'uix_provider_unique_not_null',
                 'provider_id',
                 'provider_organizer_company_id',
                 postgresql_where=text("provider_organizer_company_id IS NOT NULL"),
+                unique=True,
+            ),
+            Index(
+                'uix_provider_unique_null',
+                'provider_id',
+                postgresql_where=text("provider_organizer_company_id IS NULL"),
                 unique=True,
             ),
         )

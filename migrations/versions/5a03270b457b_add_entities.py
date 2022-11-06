@@ -1,8 +1,8 @@
 """Add entities
 
-Revision ID: 12a3c08707b4
+Revision ID: 5a03270b457b
 Revises: 
-Create Date: 2022-11-05 20:36:04.501687
+Create Date: 2022-11-06 12:23:28.895385
 
 """
 from alembic import op
@@ -15,7 +15,7 @@ from src.shared.infrastructure.persistence.sqlalchemy.decorators.outbox_id_decor
 from src.shared.infrastructure.persistence.sqlalchemy.decorators.price_decorator import PriceDecorator
 
 # revision identifiers, used by Alembic.
-revision = '12a3c08707b4'
+revision = '5a03270b457b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,8 +36,8 @@ def upgrade():
     sa.Column('sold_out', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index('uix_provider_unique_not_null', 'event', ['provider_id', sa.text('(provider_organizer_company_id is not null)')], unique=True, postgresql_where=sa.text('provider_organizer_company_id IS NOT NULL'))
-    op.create_index('uix_provider_unique_null', 'event', ['provider_id', sa.text('(provider_organizer_company_id is null)')], unique=True, postgresql_where=sa.text('provider_organizer_company_id IS NULL'))
+    op.create_index('uix_provider_unique_not_null', 'event', ['provider_id', 'provider_organizer_company_id'], unique=True, postgresql_where=sa.text('provider_organizer_company_id IS NOT NULL'))
+    op.create_index('uix_provider_unique_null', 'event', ['provider_id'], unique=True, postgresql_where=sa.text('provider_organizer_company_id IS NULL'))
     op.create_table('outbox',
     sa.Column('id', OutboxIdDecorator(), nullable=False),
     sa.Column('aggregate_type', sa.String(length=50), nullable=False),
