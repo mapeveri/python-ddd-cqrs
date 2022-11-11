@@ -12,8 +12,8 @@ from src.shared.infrastructure.di.container import DI
 
 
 class ProcessEventsProvider:
-    query_bus: QueryBus = Provide[DI.query_bus]
-    command_bus: CommandBus = Provide[DI.command_bus]
+    query_bus: QueryBus = Provide[DI.buses.query_bus]
+    command_bus: CommandBus = Provide[DI.buses.command_bus]
     http_events_provider = HttpEventsProvider = None
     upsert_event_service: UpsertEventProvider = None
     json_parse_events_provider = JsonParseEventsProvider = None

@@ -27,6 +27,56 @@ from src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outb
     SqlAlchemyOutboxRepository
 
 
+class Repositories(containers.DeclarativeContainer):
+    config = providers.Configuration()
+
+    outbox_repository = providers.Factory(SqlAlchemyOutboxRepository)
+    event_repository = providers.Factory(SqlAlchemyEventRepository)
+    event_response_repository = providers.Factory(ElasticsearchEventResponseRepository)
+    zone_repository = providers.Factory(SqlAlchemyZoneRepository)
+
+
+class Buses(containers.DeclarativeContainer):
+    config = providers.Configuration()
+    repositories = providers.DependenciesContainer()
+
+    query_bus = providers.Singleton(MemoryQueryBus)
+    command_bus = providers.Singleton(MemoryCommandBus)
+    event_bus = providers.Singleton(MemoryEventBus, outbox_repository=repositories.outbox_repository)
+
+
+class Handlers(containers.DeclarativeContainer):
+    config = providers.Configuration()
+    buses = providers.DependenciesContainer()
+    repositories = providers.DependenciesContainer()
+
+    create_event_command_handler = providers.Factory(CreateEventCommandHandler,
+                                                     repository=repositories.event_repository,
+                                                     event_bus=buses.event_bus)
+    update_event_command_handler = providers.Factory(UpdateEventCommandHandler,
+                                                     event_repository=repositories.event_repository,
+                                                     zone_repository=repositories.zone_repository,
+                                                     event_bus=buses.event_bus)
+
+    search_events_query_handler = providers.Factory(
+        SearchEventsQueryHandler,
+        event_response_repository=repositories.event_response_repository
+    )
+    find_event_by_provider_id_query_handler = providers.Factory(
+        FindEventByProviderIdQueryHandler,
+        event_repository=repositories.event_repository,
+    )
+
+    event_projection_on_event_created_domain_event_handler = providers.Factory(
+        EventProjectionOnEventCreatedDomainEventHandler,
+        event_response_repository=repositories.event_response_repository
+    )
+    event_projection_on_event_updated_domain_event_handler = providers.Factory(
+        EventProjectionOnEventUpdatedDomainEventHandler,
+        event_response_repository=repositories.event_response_repository
+    )
+
+
 class DI(containers.DeclarativeContainer):
     config = providers.Configuration()
 
@@ -35,34 +85,6 @@ class DI(containers.DeclarativeContainer):
     es = providers.Dependency(instance_of=Elasticsearch)
     celery = providers.Dependency(instance_of=Celery)
 
-    outbox_repository = providers.Factory(SqlAlchemyOutboxRepository)
-    event_repository = providers.Factory(SqlAlchemyEventRepository)
-    event_response_repository = providers.Factory(ElasticsearchEventResponseRepository)
-    zone_repository = providers.Factory(SqlAlchemyZoneRepository)
-
-    query_bus = providers.Singleton(MemoryQueryBus)
-    command_bus = providers.Singleton(MemoryCommandBus)
-    event_bus = providers.Singleton(MemoryEventBus, outbox_repository=outbox_repository)
-
-    create_event_command_handler = providers.Factory(CreateEventCommandHandler, repository=event_repository,
-                                                     event_bus=event_bus)
-    update_event_command_handler = providers.Factory(UpdateEventCommandHandler, event_repository=event_repository,
-                                                     zone_repository=zone_repository, event_bus=event_bus)
-
-    search_events_query_handler = providers.Factory(
-        SearchEventsQueryHandler,
-        event_response_repository=event_response_repository
-    )
-    find_event_by_provider_id_query_handler = providers.Factory(
-        FindEventByProviderIdQueryHandler,
-        event_repository=event_repository,
-    )
-
-    event_projection_on_event_created_domain_event_handler = providers.Factory(
-        EventProjectionOnEventCreatedDomainEventHandler,
-        event_response_repository=event_response_repository
-    )
-    event_projection_on_event_updated_domain_event_handler = providers.Factory(
-        EventProjectionOnEventUpdatedDomainEventHandler,
-        event_response_repository=event_response_repository
-    )
+    repositories = providers.Container(Repositories)
+    buses = providers.Container(Buses, repositories=repositories)
+    handlers = providers.Container(Handlers, buses=buses, repositories=repositories)

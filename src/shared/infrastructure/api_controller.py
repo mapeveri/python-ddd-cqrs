@@ -8,6 +8,6 @@ from src.shared.infrastructure.di.container import DI
 
 
 class ApiController(ABC):
-    query_bus: QueryBus = Provide[DI.query_bus]
-    command_bus: CommandBus = Provide[DI.command_bus]
+    query_bus: QueryBus = Provide[DI.buses.query_bus]
+    command_bus: CommandBus = Provide[DI.buses.command_bus]
 
