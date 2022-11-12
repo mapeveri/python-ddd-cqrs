@@ -19,9 +19,9 @@ from src.shared.infrastructure.di.container import DI
 
 @inject
 def register_commands(
-        command_bus: CommandBus = Provide[DI.command_bus],
-        create_event_command_handler: Type[CommandHandler] = Provide[DI.create_event_command_handler],
-        update_event_command_handler: Type[CommandHandler] = Provide[DI.update_event_command_handler]
+        command_bus: CommandBus = Provide[DI.buses.command_bus],
+        create_event_command_handler: Type[CommandHandler] = Provide[DI.handlers.create_event_command_handler],
+        update_event_command_handler: Type[CommandHandler] = Provide[DI.handlers.update_event_command_handler]
 ):
     command_bus.register(CreateEventCommand, create_event_command_handler)
     command_bus.register(UpdateEventCommand, update_event_command_handler)
@@ -29,10 +29,10 @@ def register_commands(
 
 @inject
 def register_queries(
-        query_bus: QueryBus = Provide[DI.query_bus],
-        search_events_query_handler: Type[QueryHandler] = Provide[DI.search_events_query_handler],
+        query_bus: QueryBus = Provide[DI.buses.query_bus],
+        search_events_query_handler: Type[QueryHandler] = Provide[DI.handlers.search_events_query_handler],
         find_event_by_provider_id_query_handler: Type[QueryHandler] = Provide[
-            DI.find_event_by_provider_id_query_handler]
+            DI.handlers.find_event_by_provider_id_query_handler]
 ):
     query_bus.register(SearchEventsQuery, search_events_query_handler)
     query_bus.register(FindEventByProviderIdQuery, find_event_by_provider_id_query_handler)
@@ -40,11 +40,11 @@ def register_queries(
 
 @inject
 def register_events(
-        event_bus: EventBus = Provide[DI.event_bus],
+        event_bus: EventBus = Provide[DI.buses.event_bus],
         event_projection_on_event_created_domain_event_handler: Type[EventHandler] = Provide(
-            DI.event_projection_on_event_created_domain_event_handler),
+            DI.handlers.event_projection_on_event_created_domain_event_handler),
         event_projection_on_event_updated_domain_event_handler: Type[EventHandler] = Provide(
-            DI.event_projection_on_event_updated_domain_event_handler)
+            DI.handlers.event_projection_on_event_updated_domain_event_handler)
 ):
     event_bus.register(EventCreatedDomainEvent, event_projection_on_event_created_domain_event_handler)
     event_bus.register(EventUpdatedDomainEvent, event_projection_on_event_updated_domain_event_handler)
