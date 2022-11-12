@@ -6,8 +6,8 @@ from dataclasses import dataclass
 class Mode:
     mode_value: str
 
-    ONLINE: str = 'online'
-    OFFLINE: str = 'offline'
+    ONLINE: str = "online"
+    OFFLINE: str = "offline"
 
     def value(self) -> str:
         return self.mode_value

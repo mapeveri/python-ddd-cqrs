@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 
-from src.marketplace.event.application.command.create.create_event_command import CreateEventCommand
+from src.marketplace.event.application.command.create.create_event_command import (
+    CreateEventCommand,
+)
 from src.marketplace.event.domain.event import Event
 from src.marketplace.event.domain.event_repository import EventRepository
 from src.marketplace.event.domain.value_objects.event_id import EventId
@@ -41,7 +43,7 @@ class CreateEventCommandHandler(CommandHandler):
             sell_from,
             sell_to,
             sold_out,
-            zones
+            zones,
         )
 
         self.repository.save(event)

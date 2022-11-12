@@ -16,9 +16,16 @@ pydantic = "==1.10.1"
 dependency-injector = "==4.40.0"
 elasticsearch = "==8.4.1"
 python-dotenv = "==0.15.0"
-faker = "*"
 
 [dev-packages]
+black = "==22.3.0"
+flake8 = "==5.0.4"
+mypy = "==0.982"
+tox = "==3.26.0"
+faker = "*"
+types-requests = "==2.28.11.4"
+sqlalchemy-stubs = "*"
+types-six = "*"
 
 [requires]
 python_version = "3.9"

@@ -3,3 +3,7 @@ celerybeat-schedule
 .idea
 __pycache__
 .env
+.tox
+.mypy_cache
+.dmypy.json
+dmypy.json

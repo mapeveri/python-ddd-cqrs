@@ -18,45 +18,32 @@ class Zone:
 
     @classmethod
     def create(
-            cls,
-            zoneId: ZoneId,
-            provider_zone_id: int,
-            capacity: int,
-            price: Price,
-            name: str,
-            numbered: bool,
-            event_id: EventId
+        cls,
+        zoneId: ZoneId,
+        provider_zone_id: int,
+        capacity: int,
+        price: Price,
+        name: str,
+        numbered: bool,
+        event_id: EventId,
     ) -> Zone:
-        return cls(
-            zoneId,
-            provider_zone_id,
-            capacity,
-            price,
-            name,
-            numbered,
-            event_id
-        )
+        return cls(zoneId, provider_zone_id, capacity, price, name, numbered, event_id)
 
-    def update(
-            self,
-            capacity: int,
-            price: Price,
-            numbered: bool
-    ) -> None:
+    def update(self, capacity: int, price: Price, numbered: bool) -> None:
         self.price = price
         self.capacity = capacity
         self.numbered = numbered
 
     @classmethod
     def create_from_primitives(
-            cls,
-            zoneId: str,
-            provider_zone_id: int,
-            capacity: int,
-            price: float,
-            name: str,
-            numbered: bool,
-            event_id: str
+        cls,
+        zoneId: str,
+        provider_zone_id: int,
+        capacity: int,
+        price: float,
+        name: str,
+        numbered: bool,
+        event_id: str,
     ) -> Zone:
         return cls(
             ZoneId(zoneId),
@@ -65,16 +52,16 @@ class Zone:
             Price(price),
             name,
             numbered,
-            EventId(event_id)
+            EventId(event_id),
         )
 
     def to_primitives(self) -> dict:
         return {
-            'id': str(self.id),
-            'provider_zone_id': self.provider_zone_id,
-            'capacity': self.capacity,
-            'price': self.price.value(),
-            'name': self.name,
-            'numbered': self.numbered,
-            'event_id': str(self.event_id)
+            "id": str(self.id),
+            "provider_zone_id": self.provider_zone_id,
+            "capacity": self.capacity,
+            "price": self.price.value(),
+            "name": self.name,
+            "numbered": self.numbered,
+            "event_id": str(self.event_id),
         }

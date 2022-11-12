@@ -11,7 +11,7 @@ from src.shared.domain.value_objects.outbox_id import OutboxId
 
 @dataclass
 class SqlAlchemyOutboxRepository(OutboxRepository):
-    db: SQLAlchemy = Provide['db']
+    db: SQLAlchemy = Provide["db"]
 
     def save(self, outbox: Outbox) -> None:
         self.db.session.add(outbox)

@@ -10,7 +10,7 @@ from src.marketplace.event.domain.event_repository import EventRepository
 
 @dataclass
 class SqlAlchemyEventRepository(EventRepository):
-    db: SQLAlchemy = Provide['db']
+    db: SQLAlchemy = Provide["db"]
 
     def save(self, event: Event) -> None:
         self.db.session.add(event)

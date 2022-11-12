@@ -12,6 +12,6 @@ class EventFinderByProviderId:
     def __call__(self, provider_id: int) -> Event:
         event = self.repository.find_by_provider_id(provider_id)
         if not event:
-            raise EventNotFound('Event not found')
+            raise EventNotFound("Event not found")
 
         return event

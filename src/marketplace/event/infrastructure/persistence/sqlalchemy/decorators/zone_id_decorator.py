@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
 from src.marketplace.event.domain.value_objects.zone_id import ZoneId
@@ -8,13 +10,17 @@ class ZoneIdDecorator(TypeDecorator):
 
     cache_ok = True
 
-    def process_bind_param(self, zone_id, dialect) -> str:
+    def process_bind_param(self, zone_id: Any, dialect: Any) -> Optional[str]:
         if isinstance(zone_id, str):
             return str(zone_id)
 
         if zone_id is not None:
             return str(zone_id)
 
-    def process_result_value(self, value, dialect) -> ZoneId:
+        return None
+
+    def process_result_value(self, value: Any, dialect: Any) -> Optional[ZoneId]:
         if value is not None:
             return ZoneId(value)
+
+        return None

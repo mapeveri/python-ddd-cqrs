@@ -1,10 +1,16 @@
 from dataclasses import dataclass
 from typing import List
 
-from src.marketplace.event.application.query.search_events.search_events_query import SearchEventsQuery
+from src.marketplace.event.application.query.search_events.search_events_query import (
+    SearchEventsQuery,
+)
 from src.marketplace.event.application.response.event_response import EventResponse
-from src.marketplace.event.application.response.event_response_converter import EventResponseConverter
-from src.marketplace.event.domain.event_reponse_repository import EventResponseRepository
+from src.marketplace.event.application.response.event_response_converter import (
+    EventResponseConverter,
+)
+from src.marketplace.event.domain.event_reponse_repository import (
+    EventResponseRepository,
+)
 from src.shared.domain.bus.query.query_handler import QueryHandler
 
 

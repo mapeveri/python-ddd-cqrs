@@ -1,9 +1,13 @@
 from dataclasses import dataclass
 from typing import Union
 
-from src.marketplace.event.application.command.update.update_event_command import UpdateEventCommand
+from src.marketplace.event.application.command.update.update_event_command import (
+    UpdateEventCommand,
+)
 from src.marketplace.event.domain.event_repository import EventRepository
-from src.marketplace.event.domain.services.event_finder_by_provider_id import EventFinderByProviderId
+from src.marketplace.event.domain.services.event_finder_by_provider_id import (
+    EventFinderByProviderId,
+)
 from src.marketplace.event.domain.zone import Zone
 from src.marketplace.event.domain.zone_repository import ZoneRepository
 from src.shared.domain.bus.command.command_handler import CommandHandler
@@ -19,7 +23,7 @@ class UpdateEventCommandHandler(CommandHandler):
     event_bus: EventBus
     finder: EventFinderByProviderId = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.finder = EventFinderByProviderId(self.event_repository)
 
     def __call__(self, command: UpdateEventCommand) -> None:
@@ -47,7 +51,7 @@ class UpdateEventCommandHandler(CommandHandler):
             sell_from,
             sell_to,
             sold_out,
-            event_zones_updated
+            event_zones_updated,
         )
 
         self.event_repository.save(event)
@@ -56,17 +60,13 @@ class UpdateEventCommandHandler(CommandHandler):
 
     def __update_zones(self, zone: Zone, zones: Union[list, dict]) -> Zone:
         try:
-            item_zone = next(filter(lambda z: z['provider_zone_id'] == zone.provider_zone_id, zones))
+            item_zone = next(filter(lambda z: z["provider_zone_id"] == zone.provider_zone_id, zones))
         except TypeError:
-            item_zone = zones if zones['provider_zone_id'] == zone.provider_zone_id else None
+            item_zone = zones if zones["provider_zone_id"] == zone.provider_zone_id else None
 
         if not item_zone:
             return zone
 
-        zone.update(
-            item_zone['capacity'],
-            Price(item_zone['price']),
-            item_zone['numbered']
-        )
+        zone.update(item_zone["capacity"], Price(item_zone["price"]), item_zone["numbered"])
 
         return zone

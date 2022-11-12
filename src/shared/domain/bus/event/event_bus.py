@@ -7,7 +7,7 @@ from src.shared.domain.bus.event.event_handler import EventHandler
 
 class EventBus(ABC):
     @abstractmethod
-    def register(self, event: Type[DomainEvent], handler: Type[EventHandler]):
+    def register(self, event: Type[DomainEvent], handler: Type[EventHandler]) -> None:
         pass
 
     @abstractmethod
@@ -15,5 +15,5 @@ class EventBus(ABC):
         pass
 
     @abstractmethod
-    def publish(self, events: List[DomainEvent]):
+    def publish(self, events: List[DomainEvent]) -> None:
         pass

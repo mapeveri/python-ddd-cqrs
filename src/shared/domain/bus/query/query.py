@@ -3,5 +3,5 @@ from abc import ABC
 
 class Query(ABC):
     @classmethod
-    def name(cls):
+    def name(cls) -> str:
         return cls.__name__

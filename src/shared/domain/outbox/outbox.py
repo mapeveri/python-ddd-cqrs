@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+from datetime import datetime
 from dataclasses import dataclass
 
 from src.shared.domain.value_objects.outbox_id import OutboxId
@@ -17,12 +17,12 @@ class Outbox:
 
     @classmethod
     def create(
-            cls,
-            id: OutboxId,
-            aggregate_type: str,
-            aggregate_id: str,
-            type: str,
-            payload: str,
+        cls,
+        id: OutboxId,
+        aggregate_type: str,
+        aggregate_id: str,
+        type: str,
+        payload: str,
     ) -> Outbox:
         return cls(
             id,
@@ -30,5 +30,5 @@ class Outbox:
             aggregate_id,
             type,
             payload,
-            datetime.datetime.utcnow(),
+            datetime.utcnow(),
         )
