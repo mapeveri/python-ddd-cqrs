@@ -8,7 +8,7 @@ run-migrations: ## Run migrations
 	docker exec -it marketplace-container pipenv run flask db upgrade
 
 run-publish-events: ## Run publish domain events
-	docker exec -it marketplace-container pipenv run flask shared publish-events-console-command
+	docker exec -it marketplace-container pipenv run flask shared publish-events-console-command --limit=200
 
 run-events-provider: ## Run celery to get provider events
 	docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery call events.provider.get_events && docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery worker --loglevel=DEBUG

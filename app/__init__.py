@@ -32,7 +32,7 @@ def flask_app() -> Flask:
             'src.marketplace.event.infrastructure.services.events_provider.process_events_provider',
             'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository',
             'src.shared.infrastructure.persistence.sqlalchemy.utils.transactions',
-            'src.shared.infrastructure.console.commands.publish_events_domain_console_command'
+            'src.shared.infrastructure.console.commands.publish_domain_events_cli'
         ],
     )
     app.container = container
