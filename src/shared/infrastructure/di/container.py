@@ -31,17 +31,20 @@ from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqla
 from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository import (
     SqlAlchemyZoneRepository,
 )
+from src.shared.domain.unit_of_work import UnitOfWork
 from src.shared.infrastructure.bus.memory_command_bus import MemoryCommandBus
 from src.shared.infrastructure.bus.memory_event_bus import MemoryEventBus
 from src.shared.infrastructure.bus.memory_query_bus import MemoryQueryBus
 from src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository import (
     SqlAlchemyOutboxRepository,
 )
+from src.shared.infrastructure.persistence.sqlalchemy.unit_of_work import SqlAlchemyUnitOfWork
 
 
 class Repositories(containers.DeclarativeContainer):
     config = providers.Configuration()
 
+    unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
     outbox_repository: SqlAlchemyOutboxRepository = providers.Factory(SqlAlchemyOutboxRepository)
     event_repository: SqlAlchemyEventRepository = providers.Factory(SqlAlchemyEventRepository)
     event_response_repository: ElasticsearchEventResponseRepository = providers.Factory(

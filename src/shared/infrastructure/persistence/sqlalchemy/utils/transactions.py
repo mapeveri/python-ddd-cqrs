@@ -2,11 +2,12 @@ from functools import update_wrapper, partial
 from typing import Any
 
 from dependency_injector.wiring import Provide
-from flask_sqlalchemy import SQLAlchemy
+
+from src.shared.domain.unit_of_work import UnitOfWork
 
 
 class Transactional:
-    db: SQLAlchemy = Provide["db"]
+    uow: UnitOfWork = Provide["repositories.unit_of_work"]
 
     def __init__(self, func: Any) -> None:
         update_wrapper(self, func)
@@ -17,14 +18,8 @@ class Transactional:
         return partial(self.__call__, obj)
 
     def __call__(self, obj: Any, *args: Any, **kwargs: Any) -> None:
-        try:
-            self.db.session.begin()
+        with self.uow():
             self.func(obj, *args, **kwargs)
-            self.db.session.commit()
-        except Exception as e:
-            print("Exception: Transactional")
-            self.db.session.rollback()
-            raise Exception(e)
 
 
 transactional = Transactional

@@ -1,7 +1,7 @@
 from pydoc import locate
 from typing import Tuple, Callable
 
-from flask import Flask, Blueprint
+from flask import Flask
 
 
 def add_commands(app: Flask, commands: Tuple) -> None:

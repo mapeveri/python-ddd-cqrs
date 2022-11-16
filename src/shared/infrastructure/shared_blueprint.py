@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
 import click
-from flask import Flask, Blueprint
+from flask import Blueprint
 
 from src.shared.infrastructure.console.utils import add_commands
 
