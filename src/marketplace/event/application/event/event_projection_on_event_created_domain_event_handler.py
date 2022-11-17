@@ -1,48 +1,32 @@
 from dataclasses import dataclass
 
-from src.marketplace.event.domain.event import Event
-from src.marketplace.event.domain.event_reponse_repository import (
-    EventResponseRepository,
+from src.marketplace.event.application.command.projection.create_event_response_command import (
+    CreateEventResponseCommand,
 )
 from src.marketplace.event.domain.domain_events.event_created_domain_event import (
     EventCreatedDomainEvent,
 )
-from src.marketplace.event.domain.value_objects.event_id import EventId
-from src.marketplace.event.domain.value_objects.mode import Mode
-from src.marketplace.event.domain.zone import Zone
+from src.shared.domain.bus.command.command_bus import CommandBus
 from src.shared.domain.bus.event.event_handler import EventHandler
 
 
 @dataclass
 class EventProjectionOnEventCreatedDomainEventHandler(EventHandler):
-    event_response_repository: EventResponseRepository
+    command_bus: CommandBus
 
     def __call__(self, event: EventCreatedDomainEvent) -> None:
-        zones = list(map(self.__create_zone, event.zones, event.aggregate_id))
-
-        event = Event(
-            EventId(event.aggregate_id),
+        command = CreateEventResponseCommand(
+            event.aggregate_id,
             event.provider_id,
-            Mode(event.mode),
+            event.mode,
             event.provider_organizer_company_id,
             event.title,
-            event.start_date,
-            event.end_date,
-            event.sell_from,
-            event.sell_to,
+            str(event.start_date),
+            str(event.end_date),
+            str(event.sell_from),
+            str(event.sell_to),
             event.sold_out,
-            zones,
+            event.zones,
         )
 
-        self.event_response_repository.save(event)
-
-    def __create_zone(self, zone: dict, event_id: str) -> Zone:
-        return Zone.create_from_primitives(
-            zone["id"],
-            zone["provider_zone_id"],
-            zone["capacity"],
-            float(zone["price"]),
-            zone["name"],
-            zone["numbered"],
-            event_id,
-        )
+        self.command_bus.dispatch(command)

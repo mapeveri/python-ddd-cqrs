@@ -7,6 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 from src.marketplace.event.application.command.create.create_event_command_handler import (
     CreateEventCommandHandler,
 )
+from src.marketplace.event.application.command.projection.create_event_response_command_handler import (
+    CreateEventResponseCommandHandler,
+)
+from src.marketplace.event.application.command.projection.update_event_response_command_handler import (
+    UpdateEventResponseCommandHandler,
+)
 from src.marketplace.event.application.command.update.update_event_command_handler import (
     UpdateEventCommandHandler,
 )
@@ -91,14 +97,24 @@ class Handlers(containers.DeclarativeContainer):
     event_projection_on_event_created_domain_event_handler: EventProjectionOnEventCreatedDomainEventHandler = (
         providers.Factory(
             EventProjectionOnEventCreatedDomainEventHandler,
-            event_response_repository=repositories.event_response_repository,
+            command_bus=buses.command_bus,
         )
     )
     event_projection_on_event_updated_domain_event_handler: EventProjectionOnEventUpdatedDomainEventHandler = (
         providers.Factory(
             EventProjectionOnEventUpdatedDomainEventHandler,
-            event_response_repository=repositories.event_response_repository,
+            command_bus=buses.command_bus,
         )
+    )
+
+    create_event_response_command_handler: CreateEventResponseCommandHandler = providers.Factory(
+        CreateEventResponseCommandHandler,
+        event_response_repository=repositories.event_response_repository,
+    )
+
+    update_event_response_command_handler: UpdateEventResponseCommandHandler = providers.Factory(
+        UpdateEventResponseCommandHandler,
+        event_response_repository=repositories.event_response_repository,
     )
 
 
