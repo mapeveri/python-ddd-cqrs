@@ -7,7 +7,7 @@ from src.shared.domain.unit_of_work import UnitOfWork
 
 
 class Transactional:
-    uow: UnitOfWork = Provide["repositories.unit_of_work"]
+    uow: UnitOfWork = Provide["unit_of_work"]
 
     def __init__(self, func: Any) -> None:
         update_wrapper(self, func)

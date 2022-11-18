@@ -50,7 +50,6 @@ from src.shared.infrastructure.persistence.sqlalchemy.unit_of_work import SqlAlc
 class Repositories(containers.DeclarativeContainer):
     config = providers.Configuration()
 
-    unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
     outbox_repository: SqlAlchemyOutboxRepository = providers.Factory(SqlAlchemyOutboxRepository)
     event_repository: SqlAlchemyEventRepository = providers.Factory(SqlAlchemyEventRepository)
     event_response_repository: ElasticsearchEventResponseRepository = providers.Factory(
@@ -125,6 +124,8 @@ class DI(containers.DeclarativeContainer):
     db = providers.Dependency(instance_of=SQLAlchemy)
     es = providers.Dependency(instance_of=Elasticsearch)
     celery = providers.Dependency(instance_of=Celery)
+
+    unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
 
     repositories = providers.Container(Repositories)
     buses = providers.Container(Buses, repositories=repositories)
