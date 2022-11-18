@@ -33,6 +33,7 @@ from src.shared.domain.bus.event.event_handler import EventHandler
 from src.shared.domain.bus.query.query_bus import QueryBus
 from src.shared.domain.bus.query.query_handler import QueryHandler
 from src.shared.infrastructure.di.container import DI
+from src.shared.infrastructure.persistence.sqlalchemy.utils.transactions import transactional
 
 
 @inject
@@ -47,8 +48,8 @@ def register_commands(
         DI.handlers.update_event_response_command_handler
     ],
 ) -> None:
-    command_bus.register(CreateEventCommand, create_event_command_handler)
-    command_bus.register(UpdateEventCommand, update_event_command_handler)
+    command_bus.register(CreateEventCommand, transactional(create_event_command_handler))
+    command_bus.register(UpdateEventCommand, transactional(update_event_command_handler))
     command_bus.register(CreateEventResponseCommand, create_event_response_command_handler)
     command_bus.register(UpdateEventResponseCommand, update_event_response_command_handler)
 

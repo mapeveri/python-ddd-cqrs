@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Type
+from typing import Type, Union, Any
 
 from src.shared.domain.bus.command.command import Command
 from src.shared.domain.bus.command.command_handler import CommandHandler
@@ -7,7 +7,7 @@ from src.shared.domain.bus.command.command_handler import CommandHandler
 
 class CommandBus(ABC):
     @abstractmethod
-    def register(self, command: Type[Command], handler: Type[CommandHandler]) -> None:
+    def register(self, command: Type[Command], handler: Type[Union[CommandHandler, Any]]) -> None:
         pass
 
     @abstractmethod
