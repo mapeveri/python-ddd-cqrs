@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from flask import Flask
+from flask_cors import CORS, cross_origin
 
 from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.bus.register import configure_buses
@@ -12,6 +13,12 @@ from src.shared.infrastructure.persistence.sqlalchemy import configure_database
 def flask_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object('app.conf.config')
+
+    CORS(app, resource={
+        r'/*': {
+            'origins': app.config['ALLOWED_CLIENT_URL']
+        }
+    })
 
     celery = configure_celery(app)
     app.celery = celery

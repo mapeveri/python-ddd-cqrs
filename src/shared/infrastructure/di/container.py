@@ -1,3 +1,5 @@
+import os
+
 from celery import Celery
 from dependency_injector import containers, providers
 from elasticsearch import Elasticsearch
@@ -13,9 +15,8 @@ from src.marketplace.event.application.command.projection.create_event_response_
 from src.marketplace.event.application.command.projection.update_event_response_command_handler import (
     UpdateEventResponseCommandHandler,
 )
-from src.marketplace.event.application.command.update.update_event_command_handler import (
-    UpdateEventCommandHandler,
-)
+from src.marketplace.event.application.command.update.update_event_command_handler import UpdateEventCommandHandler
+from src.marketplace.event.application.command.upload.upload_file_command_handler import UploadFileCommandHandler
 from src.marketplace.event.application.event.event_projection_on_event_created_domain_event_handler import (
     EventProjectionOnEventCreatedDomainEventHandler,
 )
@@ -114,6 +115,11 @@ class Handlers(containers.DeclarativeContainer):
     update_event_response_command_handler: UpdateEventResponseCommandHandler = providers.Factory(
         UpdateEventResponseCommandHandler,
         event_response_repository=repositories.event_response_repository,
+    )
+
+    upload_file_command_handler: UploadFileCommandHandler = providers.Factory(
+        UploadFileCommandHandler,
+        upload_folder=os.getenv("UPLOAD_FOLDER"),
     )
 
 
