@@ -1,10 +1,9 @@
-from typing import Type, List, Dict
+from typing import List
 
 import json
 
 from src.shared.domain.bus.event.domain_event import DomainEvent
 from src.shared.domain.bus.event.event_bus import EventBus
-from src.shared.domain.bus.event.event_handler import EventHandler
 from src.shared.domain.outbox.outbox import Outbox
 from src.shared.domain.outbox.outbox_repository import OutboxRepository
 from src.shared.domain.value_objects.outbox_id import OutboxId
@@ -12,14 +11,7 @@ from src.shared.domain.value_objects.outbox_id import OutboxId
 
 class MemoryEventBus(EventBus):
     def __init__(self, outbox_repository: OutboxRepository) -> None:
-        self.handlers: Dict = {}
         self.outbox_repository = outbox_repository
-
-    def register(self, event: Type[DomainEvent], handler: Type[EventHandler]) -> None:
-        self.handlers[event.name()] = handler
-
-    def execute_handler(self, event: Type[DomainEvent]) -> None:
-        self.handlers[event.name()](event)
 
     def publish(self, events: List[DomainEvent]) -> None:
         for event in events:

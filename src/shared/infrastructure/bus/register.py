@@ -21,16 +21,8 @@ from src.marketplace.event.application.query.find.find_event_by_provider_id_quer
 from src.marketplace.event.application.query.search_events.search_events_query import (
     SearchEventsQuery,
 )
-from src.marketplace.event.domain.domain_events.event_created_domain_event import (
-    EventCreatedDomainEvent,
-)
-from src.marketplace.event.domain.domain_events.event_updated_domain_event import (
-    EventUpdatedDomainEvent,
-)
 from src.shared.domain.bus.command.command_bus import CommandBus
 from src.shared.domain.bus.command.command_handler import CommandHandler
-from src.shared.domain.bus.event.event_bus import EventBus
-from src.shared.domain.bus.event.event_handler import EventHandler
 from src.shared.domain.bus.query.query_bus import QueryBus
 from src.shared.domain.bus.query.query_handler import QueryHandler
 from src.shared.infrastructure.di.container import DI
@@ -69,21 +61,6 @@ def register_queries(
     query_bus.register(FindEventByProviderIdQuery, find_event_by_provider_id_query_handler)
 
 
-@inject
-def register_events(
-    event_bus: EventBus = Provide[DI.buses.event_bus],
-    event_projection_on_event_created_domain_event_handler: Type[EventHandler] = Provide(
-        DI.handlers.event_projection_on_event_created_domain_event_handler
-    ),
-    event_projection_on_event_updated_domain_event_handler: Type[EventHandler] = Provide(
-        DI.handlers.event_projection_on_event_updated_domain_event_handler
-    ),
-) -> None:
-    event_bus.register(EventCreatedDomainEvent, event_projection_on_event_created_domain_event_handler)
-    event_bus.register(EventUpdatedDomainEvent, event_projection_on_event_updated_domain_event_handler)
-
-
 def configure_buses() -> None:
     register_commands()
     register_queries()
-    register_events()

@@ -31,6 +31,7 @@ def flask_app() -> Flask:
     container.wire(
         modules=[
             'src.shared.infrastructure.api_controller',
+            'src.shared.infrastructure.bus.event.mapping',
             'src.shared.infrastructure.bus.register',
             'src.shared.infrastructure.persistence.sqlalchemy.unit_of_work._sql_alchemy_unit_of_work',
             'src.shared.infrastructure.persistence.sqlalchemy.utils.transactions',

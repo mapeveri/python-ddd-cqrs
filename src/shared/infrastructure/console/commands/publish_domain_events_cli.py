@@ -1,10 +1,9 @@
 import json
-from pydoc import locate
-from typing import Optional
+from typing import Optional, Dict
 
+from celery import Celery
 from dependency_injector.wiring import inject, Provide
 
-from src.shared.domain.bus.event.event_bus import EventBus
 from src.shared.domain.outbox.outbox_criteria import OutboxCriteria
 from src.shared.domain.outbox.outbox_repository import OutboxRepository
 from src.shared.infrastructure.di.container import DI
@@ -17,11 +16,12 @@ class PublishDomainEventsCli:
     @inject
     def __init__(
         self,
+        celery: Celery = Provide[DI.celery],
         outbox_repository: OutboxRepository = Provide[DI.repositories.outbox_repository],
-        event_bus: EventBus = Provide[DI.buses.event_bus],
     ) -> None:
+        self.__celery = celery
         self.__outbox_repository = outbox_repository
-        self.__event_bus = event_bus
+        self.__exchange = celery.conf.event_exchange
 
     @transactional
     def __call__(self, limit: Optional[int] = None) -> int:
@@ -29,13 +29,24 @@ class PublishDomainEventsCli:
         outbox_events = self.__outbox_repository.find_by_criteria(outbox_criteria)
 
         for outbox_event in outbox_events:
-            domain_event = outbox_event.type
+            event_name = outbox_event.type.split(".")[-1]
             payload = json.loads(outbox_event.payload)
 
-            klass = locate(domain_event)
-            event = klass.from_primitives(payload)
-            self.__event_bus.execute_handler(event)
+            self.__publish_event(event_name, payload)
 
             self.__outbox_repository.remove(outbox_event.id)
 
         return 1
+
+    def __publish_event(self, event_name: str, payload: Dict):
+        event_data = {
+            "event_name": event_name,
+            "payload": payload,
+        }
+
+        self.__celery.send_task(
+            "domain_events.handle_event",
+            args=(event_data,),
+            routing_key=self.__celery.conf.event_routing_key,
+            exchange=self.__exchange,
+        )

@@ -26,11 +26,21 @@ To run celery worker and beat:
 
     docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery beat --loglevel=DEBUG
 
-    docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery worker --loglevel=DEBUG
+    docker exec -it marketplace-container pipenv run celery -A app.celery_worker.celery worker -Q celery --loglevel=DEBUG
 
+Domain events
+-------------
 
-Events
-------
+To publish outbox events to rabbitmq:
+
+    make run-publish-events
+
+To consume events from rabbitmq:
+
+    make run-consume-events
+
+Events provider
+---------------
 
 To get events from provider:
 
