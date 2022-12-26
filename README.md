@@ -52,3 +52,15 @@ Tests
 To run the tests, use make run-tests but first make sure the container is started:
 
     make run-tests
+
+
+Monitoring
+----------
+
+Access to Grafana and Prometheus:
+
+    grafana: http://localhost:3000/
+        user: admin
+        password: pass@123
+
+    prometheus: http://localhost:9999/

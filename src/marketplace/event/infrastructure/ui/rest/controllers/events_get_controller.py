@@ -3,6 +3,7 @@ from typing import Tuple, Any, Optional
 
 from flask import jsonify, request
 from flask.views import View
+from prometheus_client import Summary
 
 from src.marketplace.event.application.query.search_events.search_events_query import (
     SearchEventsQuery,
@@ -10,10 +11,13 @@ from src.marketplace.event.application.query.search_events.search_events_query i
 from src.shared.domain.exceptions.invalid_parameter_exception import InvalidParameterException
 from src.shared.infrastructure.api_controller import ApiController
 
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+
 
 class EventsGetController(View, ApiController):
     methods = ["GET"]
 
+    @REQUEST_TIME.time()
     def dispatch_request(self) -> Tuple[Any, int]:
         try:
             args = request.args

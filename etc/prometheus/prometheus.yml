@@ -1,0 +1,11 @@
+scrape_configs:
+
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'app_marketplace_backend'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['marketplace-container:5000']
