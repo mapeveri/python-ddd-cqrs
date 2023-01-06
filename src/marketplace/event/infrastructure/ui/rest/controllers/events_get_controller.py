@@ -3,15 +3,13 @@ from typing import Tuple, Any, Optional
 
 from flask import jsonify, request
 from flask.views import View
-from prometheus_client import Summary
 
+from src.shared.infrastructure.prometheus.metrics import api_request_duration, QUANTILE
 from src.marketplace.event.application.query.search_events.search_events_query import (
     SearchEventsQuery,
 )
 from src.shared.domain.exceptions.invalid_parameter_exception import InvalidParameterException
 from src.shared.infrastructure.api_controller import ApiController
-
-api_request_duration = Summary('http_request_duration_seconds', 'Api requests response time in seconds', ['endpoint'])
 
 
 class EventsGetController(View, ApiController):
@@ -34,7 +32,7 @@ class EventsGetController(View, ApiController):
             code = 500
             response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
 
-        api_request_duration.labels(endpoint='get_events').observe(0.3672)
+        api_request_duration.labels(endpoint='get_events').observe(QUANTILE)
         return response, code
 
     def __check_dates(self, start_date: Optional[str], end_date: Optional[str]) -> None:

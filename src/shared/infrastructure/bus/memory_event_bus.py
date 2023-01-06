@@ -2,15 +2,12 @@ from typing import List
 
 import json
 
-from prometheus_client import Counter
-
+from src.shared.infrastructure.prometheus.metrics import domain_event_metric
 from src.shared.domain.bus.event.domain_event import DomainEvent
 from src.shared.domain.bus.event.event_bus import EventBus
 from src.shared.domain.outbox.outbox import Outbox
 from src.shared.domain.outbox.outbox_repository import OutboxRepository
 from src.shared.domain.value_objects.outbox_id import OutboxId
-
-domain_event_metric = Counter('domain_events', 'Domain Events', ['name'])
 
 
 class MemoryEventBus(EventBus):

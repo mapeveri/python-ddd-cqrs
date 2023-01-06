@@ -1,8 +1,6 @@
 from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_cors import CORS, cross_origin
-from prometheus_client import make_wsgi_app
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.bus.register import configure_buses
@@ -52,9 +50,5 @@ def flask_app() -> Flask:
 
     app.register_blueprint(event_blueprint.blueprint)
     app.register_blueprint(shared_blueprint.blueprint)
-
-    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
-        '/metrics': make_wsgi_app()
-    })
 
     return app
