@@ -4,6 +4,7 @@ from celery import Celery
 from dependency_injector import containers, providers
 from elasticsearch import Elasticsearch
 from flask import Flask
+from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 
 from src.marketplace.event.application.command.create.create_event_command_handler import (
@@ -23,6 +24,13 @@ from src.marketplace.event.application.event.event_projection_on_event_created_d
 from src.marketplace.event.application.event.event_projection_on_event_updated_domain_event_handler import (
     EventProjectionOnEventUpdatedDomainEventHandler,
 )
+
+from src.marketplace.retention.application.command.new_event_available.send_email_new_event_available_command_handler import (  # noqa
+    SendEmailNewEventAvailableCommandHandler,
+)
+from src.marketplace.retention.application.event.send_email_new_event_available_on_event_created_domain_event_handler import (  # noqa
+    SendEmailNewEventAvailableOnEventCreatedDomainEventHandler,
+)
 from src.marketplace.event.application.query.find.find_event_by_provider_id_query_handler import (
     FindEventByProviderIdQueryHandler,
 )
@@ -38,6 +46,8 @@ from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqla
 from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository import (
     SqlAlchemyZoneRepository,
 )
+from src.marketplace.retention.domain.send_email import SendEmail
+from src.marketplace.retention.infrastructure.email.flask_send_email import FlaskSendEmail
 from src.shared.domain.unit_of_work import UnitOfWork
 from src.shared.infrastructure.bus.memory_command_bus import MemoryCommandBus
 from src.shared.infrastructure.bus.memory_event_bus import MemoryEventBus
@@ -72,6 +82,7 @@ class Handlers(containers.DeclarativeContainer):
     config = providers.Configuration()
     buses = providers.DependenciesContainer()
     repositories = providers.DependenciesContainer()
+    services = providers.DependenciesContainer()
 
     create_event_command_handler: CreateEventCommandHandler = providers.Factory(
         CreateEventCommandHandler,
@@ -106,6 +117,11 @@ class Handlers(containers.DeclarativeContainer):
             command_bus=buses.command_bus,
         )
     )
+    # noqa
+    send_email_new_event_available_on_event_created_domain_event_handler: SendEmailNewEventAvailableOnEventCreatedDomainEventHandler = providers.Factory(  # noqa
+        SendEmailNewEventAvailableOnEventCreatedDomainEventHandler,
+        command_bus=buses.command_bus,
+    )
 
     create_event_response_command_handler: CreateEventResponseCommandHandler = providers.Factory(
         CreateEventResponseCommandHandler,
@@ -121,6 +137,18 @@ class Handlers(containers.DeclarativeContainer):
         UploadFileCommandHandler,
         upload_folder=os.getenv("UPLOAD_FOLDER"),
     )
+    send_email_new_event_available_command_handler: SendEmailNewEventAvailableCommandHandler = providers.Factory(
+        SendEmailNewEventAvailableCommandHandler,
+        send_email=services.send_email,
+    )
+
+
+class Services(containers.DeclarativeContainer):
+    config = providers.Configuration()
+
+    send_email: SendEmail = providers.Factory(
+        FlaskSendEmail, sender=os.getenv("MAIL_SENDER"), recipients=[os.getenv("MAIL_RECIPIENT")]
+    )
 
 
 class DI(containers.DeclarativeContainer):
@@ -130,9 +158,11 @@ class DI(containers.DeclarativeContainer):
     db = providers.Dependency(instance_of=SQLAlchemy)
     es = providers.Dependency(instance_of=Elasticsearch)
     celery = providers.Dependency(instance_of=Celery)
+    mail = providers.Dependency(instance_of=Mail)
 
     unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
 
     repositories = providers.Container(Repositories)
+    services = providers.Container(Services)
     buses = providers.Container(Buses, repositories=repositories)
-    handlers = providers.Container(Handlers, buses=buses, repositories=repositories)
+    handlers = providers.Container(Handlers, buses=buses, repositories=repositories, services=services)

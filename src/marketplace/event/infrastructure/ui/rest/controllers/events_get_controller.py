@@ -32,7 +32,7 @@ class EventsGetController(View, ApiController):
             code = 500
             response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
 
-        api_request_duration.labels(endpoint='get_events').observe(QUANTILE)
+        api_request_duration.labels(endpoint="get_events").observe(QUANTILE)
         return response, code
 
     def __check_dates(self, start_date: Optional[str], end_date: Optional[str]) -> None:

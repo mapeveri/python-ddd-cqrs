@@ -12,9 +12,6 @@ class MetricsGetController(View):
         multiprocess.MultiProcessCollector(registry)
         data = generate_latest(registry)
 
-        response_headers = [
-            ('Content-type', CONTENT_TYPE_LATEST),
-            ('Content-Length', str(len(data)))
-        ]
+        response_headers = [("Content-type", CONTENT_TYPE_LATEST), ("Content-Length", str(len(data)))]
 
         return Response(response=data, status=200, headers=response_headers)
