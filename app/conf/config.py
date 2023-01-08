@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv('APP_SECRET_KEY')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Debug mode
-DEBUG = os.getenv("FLASK_DEBUG")
+DEBUG = bool(os.getenv("FLASK_DEBUG"))
 
 # Celery
 broker_url = os.getenv('CELERY_BROKER_URL')
@@ -24,3 +24,12 @@ ELASTICSEARCH_URL = os.getenv('ELASTICSEARCH_URL')
 
 ALLOWED_CLIENT_URL = os.getenv('ALLOWED_CLIENT_URL')
 UPLOAD_FOLDER = os.getenv('UPLOAD_FOLDER')
+
+# Email
+MAIL_SERVER = os.getenv('MAIL_SERVER')
+MAIL_PORT = os.getenv('MAIL_PORT')
+MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+MAIL_USE_TLS = os.getenv('MAIL_USE_TLS')
+MAIL_SENDER = os.getenv('MAIL_SENDER')
+MAIL_RECIPIENT = os.getenv('MAIL_RECIPIENT')

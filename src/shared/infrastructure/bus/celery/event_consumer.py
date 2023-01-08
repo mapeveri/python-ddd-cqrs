@@ -2,7 +2,7 @@ from typing import Dict
 
 from celery import shared_task
 
-from src.shared.infrastructure.bus.event.mapping import event_mapping
+from src.shared.infrastructure.bus.event.mapping import events_mapping
 
 
 @shared_task(name="domain_events.handle_event", ignore_result=True)
@@ -11,6 +11,6 @@ def event_consumer(event: Dict) -> None:
     event_name = event["event_name"]
     payload = event["payload"]
 
-    events = event_mapping()
-    event_handler = next(filter(lambda event: event["event"].name() == event_name, events))
-    event_handler["handler"](event_handler["event"].from_primitives(payload))
+    mapping = next(filter(lambda event: event["event"].name() == event_name, events_mapping()))
+    for event_handler in mapping["handlers"]:
+        event_handler(mapping["event"].from_primitives(payload))

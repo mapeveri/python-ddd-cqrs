@@ -13,21 +13,27 @@ from src.shared.infrastructure.di.container import DI
 
 
 @inject
-def event_mapping(
+def events_mapping(
     event_projection_on_event_created_domain_event_handler: Type[EventHandler] = Provide(
         DI.handlers.event_projection_on_event_created_domain_event_handler
     ),
     event_projection_on_event_updated_domain_event_handler: Type[EventHandler] = Provide(
         DI.handlers.event_projection_on_event_updated_domain_event_handler
     ),
+    send_email_new_event_available_on_event_created_domain_event_handler: Type[EventHandler] = Provide(
+        DI.handlers.send_email_new_event_available_on_event_created_domain_event_handler
+    ),
 ) -> List[Dict]:
     return [
         {
             "event": EventCreatedDomainEvent,
-            "handler": event_projection_on_event_created_domain_event_handler,
+            "handlers": [
+                event_projection_on_event_created_domain_event_handler,
+                send_email_new_event_available_on_event_created_domain_event_handler,
+            ],
         },
         {
             "event": EventUpdatedDomainEvent,
-            "handler": event_projection_on_event_updated_domain_event_handler,
+            "handlers": [event_projection_on_event_updated_domain_event_handler],
         },
     ]

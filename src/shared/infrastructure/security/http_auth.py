@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = HTTPBasicAuth()
 USER_DATA = {
-    os.environ.get('METRICS_ENDPOINT_USER'): generate_password_hash(os.environ.get('METRICS_ENDPOINT_PASSWORD'))
+    os.environ.get("METRICS_ENDPOINT_USER"): generate_password_hash(os.environ.get("METRICS_ENDPOINT_PASSWORD"))
 }
 
 

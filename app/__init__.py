@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_cors import CORS, cross_origin
+from flask_mail import Mail
 
 from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.bus.register import configure_buses
@@ -14,11 +15,7 @@ def flask_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object('app.conf.config')
 
-    CORS(app, resource={
-        r'/*': {
-            'origins': app.config['ALLOWED_CLIENT_URL']
-        }
-    })
+    CORS(app, resource={r'/*': {'origins': app.config['ALLOWED_CLIENT_URL']}})
 
     celery = configure_celery(app)
     app.celery = celery
@@ -27,7 +24,9 @@ def flask_app() -> Flask:
 
     es = Elasticsearch(app.config['ELASTICSEARCH_URL'])
 
-    container = DI(app=app, db=db, es=es, celery=celery)
+    mail = Mail(app)
+
+    container = DI(app=app, db=db, es=es, celery=celery, mail=mail)
     container.wire(
         modules=[
             'src.shared.infrastructure.api_controller',
@@ -41,7 +40,8 @@ def flask_app() -> Flask:
             '.elasticsearch_event_response_repository',
             'src.marketplace.event.infrastructure.services.events_provider.process_events_provider',
             'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository',
-            'src.shared.infrastructure.console.commands.publish_domain_events_cli'
+            'src.shared.infrastructure.console.commands.publish_domain_events_cli',
+            'src.marketplace.retention.infrastructure.email.flask_send_email'
         ],
     )
     app.container = container
