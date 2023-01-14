@@ -11,6 +11,37 @@ class UploadFilePostController(View, ApiController):
     methods = ["POST"]
 
     def dispatch_request(self) -> Tuple[Any, int]:
+        """
+        Upload file related events
+        ---
+        consumes:
+            - multipart/form-data
+        parameters:
+          - name: body
+            in: body
+            required: true
+            schema:
+              id: Upload file
+              required:
+                - file
+                - dztotalchunkcount
+                - dzchunkbyteoffset
+              properties:
+                file:
+                  type: file
+                  description: The file to upload
+                dztotalchunkcount:
+                  type: number
+                  description: Total chunk count
+                dzchunkbyteoffset:
+                  type: number
+                  description: Total chunk offset
+        responses:
+          200:
+            description: Empty json
+          500:
+            description: Unexpected error.
+        """
         file = request.files["file"]
         total_chunk_count = int(request.form["dztotalchunkcount"])
         filename = file.filename
@@ -20,6 +51,12 @@ class UploadFilePostController(View, ApiController):
         if is_chunk:
             start_bytes = int(request.form["dzchunkbyteoffset"])
 
-        self.command_bus.dispatch(UploadFileCommand(file.stream.read(), filename, start_bytes, is_chunk))
+        try:
+            self.command_bus.dispatch(UploadFileCommand(file.stream.read(), filename, start_bytes, is_chunk))
+            code = 200
+            response = jsonify({})
+        except Exception as e:
+            code = 500
+            response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
 
-        return jsonify({}), 200
+        return response, code

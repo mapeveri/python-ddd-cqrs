@@ -15,6 +15,74 @@ class EventsPostController(View, ApiController):
     methods = ["POST"]
 
     def dispatch_request(self) -> Tuple[Any, int]:
+        """
+        Create event
+        ---
+        consumes:
+            - application/json
+        parameters:
+          - name: body
+            in: body
+            required: true
+            schema:
+              id: Event
+              required:
+                - name
+              properties:
+                title:
+                  type: string
+                  description: Event title
+                mode:
+                  type: string
+                  description: Event mode
+                  example: Online
+                provider_id:
+                  type: number
+                  description: Provider id
+                provider_organizer_company_id:
+                  type: number
+                  description: Provider organizer company id
+                start_date:
+                  type: string
+                  description: Start date event
+                end_date:
+                  type: string
+                  description: End date event
+                sell_from:
+                  type: string
+                  description: Sell from date event
+                sell_to:
+                  type: string
+                  description: Sell to date event
+                sold_out:
+                  type: boolean
+                  description: Event sold out
+                zones:
+                  description: Zones related to the event
+                  type: array
+                  items:
+                    properties:
+                        provider_zone_id:
+                            type: number
+                            description: Provider zone id
+                        capacity:
+                            type: number
+                            description: Event zone capacity
+                        price:
+                            type: number
+                            description: Event price
+                        name:
+                            type: string
+                            description: Zone name
+                        numbered:
+                            type: boolean
+                            description: Zone is numbered
+        responses:
+          201:
+            description: Event created
+          500:
+            description: Unexpected error.
+        """
         try:
             content: Dict = request.json
 

@@ -16,6 +16,55 @@ class EventsGetController(View, ApiController):
     methods = ["GET"]
 
     def dispatch_request(self) -> Tuple[Any, int]:
+        """
+        Search events
+        ---
+        parameters:
+          - in: query
+            name: starts_at
+            type: string
+            required: false
+          - in: query
+            name: ends_at
+            type: string
+            required: false
+        responses:
+          200:
+            description: List of events
+            schema:
+              id: Event
+              type: array
+              items:
+                  properties:
+                    id:
+                      type: string
+                      description: Identification event
+                    title:
+                      type: string
+                      description: Event title
+                    max_price:
+                      type: number
+                      description: Max price event
+                    min_price:
+                      type: number
+                      description: Min price event
+                    start_date:
+                      type: string
+                      description: Date start at the event
+                    start_time:
+                      type: string
+                      description: Date start time the event
+                    end_date:
+                      type: string
+                      description: Date end at the event
+                    end_time:
+                      type: string
+                      description: Date end time the event
+          400:
+            description: Bad request. Invalid parameters
+          500:
+            description: Unexpected error.
+        """
         try:
             args = request.args
             start_date: Optional[str] = args.get("starts_at")

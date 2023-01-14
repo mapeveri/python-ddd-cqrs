@@ -20,6 +20,7 @@ kombu = "==5.2.4"
 prometheus-client = "==0.15.0"
 flask-httpauth = "==4.7.0"
 flask-mail = "0.9.1"
+flasgger = "*"
 
 [dev-packages]
 black = "==22.3.0"

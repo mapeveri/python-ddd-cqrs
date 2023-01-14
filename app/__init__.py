@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from flasgger import Swagger
 from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail
@@ -8,47 +9,34 @@ from src.shared.infrastructure.bus.register import configure_buses
 from src.shared.infrastructure.celery.configuration import configure_celery
 from src.marketplace.event.infrastructure import event_blueprint
 from src.shared.infrastructure.di.container import DI
+from src.shared.infrastructure.di.modules import MODULES
 from src.shared.infrastructure.persistence.sqlalchemy import configure_database
 
 
 def flask_app() -> Flask:
     app = Flask(__name__)
     app.config.from_object('app.conf.config')
-
+    app.config['SWAGGER'] = {
+        'title': 'Events V1 API DOCS',
+        'doc_dir': './docs/v1'
+    }
+    Swagger(app)
     CORS(app, resource={r'/*': {'origins': app.config['ALLOWED_CLIENT_URL']}})
+    mail = Mail(app)
 
     celery = configure_celery(app)
     app.celery = celery
 
     db = configure_database(app)
-
     es = Elasticsearch(app.config['ELASTICSEARCH_URL'])
 
-    mail = Mail(app)
-
     container = DI(app=app, db=db, es=es, celery=celery, mail=mail)
-    container.wire(
-        modules=[
-            'src.shared.infrastructure.api_controller',
-            'src.shared.infrastructure.bus.event.mapping',
-            'src.shared.infrastructure.bus.register',
-            'src.shared.infrastructure.persistence.sqlalchemy.unit_of_work._sql_alchemy_unit_of_work',
-            'src.shared.infrastructure.persistence.sqlalchemy.utils.transactions',
-            'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_event_repository',
-            'src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository',
-            'src.marketplace.event.infrastructure.persistence.elasticsearch.repository'
-            '.elasticsearch_event_response_repository',
-            'src.marketplace.event.infrastructure.services.events_provider.process_events_provider',
-            'src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository',
-            'src.shared.infrastructure.console.commands.publish_domain_events_cli',
-            'src.marketplace.retention.infrastructure.email.flask_send_email'
-        ],
-    )
+    container.wire(modules=MODULES)
     app.container = container
 
     configure_buses()
 
-    app.register_blueprint(event_blueprint.blueprint)
+    app.register_blueprint(event_blueprint.blueprint, url_prefix='/api/v1')
     app.register_blueprint(shared_blueprint.blueprint)
 
     return app
