@@ -6,6 +6,7 @@ MODULES = [
     "src.shared.infrastructure.persistence.sqlalchemy.utils.transactions",
     "src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_event_repository",
     "src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_zone_repository",
+    "src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_file_repository",
     "src.marketplace.event.infrastructure.persistence.elasticsearch.repository"
     ".elasticsearch_event_response_repository",
     "src.marketplace.event.infrastructure.services.events_provider.process_events_provider",

@@ -14,7 +14,7 @@ from src.marketplace.event.application.command.projection.update_event_response_
 from src.marketplace.event.application.command.update.update_event_command import (
     UpdateEventCommand,
 )
-from src.marketplace.event.application.command.upload.upload_file_command import UploadFileCommand
+from src.marketplace.event.application.command.upload.upload_event_file_command import UploadEventFileCommand
 from src.marketplace.event.application.query.find.find_event_by_provider_id_query import (
     FindEventByProviderIdQuery,
 )
@@ -52,7 +52,7 @@ def register_commands(
     command_bus.register(UpdateEventCommand, transactional(update_event_command_handler))
     command_bus.register(CreateEventResponseCommand, create_event_response_command_handler)
     command_bus.register(UpdateEventResponseCommand, update_event_response_command_handler)
-    command_bus.register(UploadFileCommand, upload_file_command_handler)
+    command_bus.register(UploadEventFileCommand, upload_file_command_handler)
     command_bus.register(SendEmailNewEventAvailableCommand, send_email_new_event_available_command)
 
 

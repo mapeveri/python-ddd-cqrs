@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 from typing import Union
 
 from src.marketplace.event.application.command.update.update_event_command import (
     UpdateEventCommand,
 )
 from src.marketplace.event.domain.event_repository import EventRepository
-from src.marketplace.event.domain.services.event_finder_by_provider_id import (
+from src.marketplace.event.domain.services.event_finder import (
     EventFinderByProviderId,
 )
 from src.marketplace.event.domain.zone import Zone
@@ -16,18 +15,20 @@ from src.shared.domain.datetime_utils import ensure_datetime_iso_is_valid
 from src.shared.domain.value_objects.price import Price
 
 
-@dataclass
 class UpdateEventCommandHandler(CommandHandler):
-    event_repository: EventRepository
-    zone_repository: ZoneRepository
-    event_bus: EventBus
-    finder: EventFinderByProviderId = None
-
-    def __post_init__(self) -> None:
-        self.finder = EventFinderByProviderId(self.event_repository)
+    def __init__(
+        self,
+        event_repository: EventRepository,
+        zone_repository: ZoneRepository,
+        event_bus: EventBus,
+    ) -> None:
+        self.__event_repository = event_repository
+        self.__zone_repository = zone_repository
+        self.__event_bus = event_bus
+        self.__finder = EventFinderByProviderId(self.__event_repository)
 
     def __call__(self, command: UpdateEventCommand) -> None:
-        event = self.finder(command.provider_id)
+        event = self.__finder.by_provider_id(command.provider_id)
 
         provider_organizer_company_id = command.provider_organizer_company_id
         title = command.title
@@ -40,7 +41,7 @@ class UpdateEventCommandHandler(CommandHandler):
         sold_out = command.sold_out
 
         zones = command.zones
-        event_zones = self.zone_repository.zones_by_event_id(event.id)
+        event_zones = self.__zone_repository.zones_by_event_id(event.id)
         event_zones_updated = list(map(self.__update_zones, event_zones, zones))
 
         event.update(
@@ -54,9 +55,9 @@ class UpdateEventCommandHandler(CommandHandler):
             event_zones_updated,
         )
 
-        self.event_repository.save(event)
+        self.__event_repository.save(event)
 
-        self.event_bus.publish(event.pull_domain_events())
+        self.__event_bus.publish(event.pull_domain_events())
 
     def __update_zones(self, zone: Zone, zones: Union[list, dict]) -> Zone:
         try:

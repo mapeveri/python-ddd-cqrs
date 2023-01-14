@@ -17,7 +17,9 @@ from src.marketplace.event.application.command.projection.update_event_response_
     UpdateEventResponseCommandHandler,
 )
 from src.marketplace.event.application.command.update.update_event_command_handler import UpdateEventCommandHandler
-from src.marketplace.event.application.command.upload.upload_file_command_handler import UploadFileCommandHandler
+from src.marketplace.event.application.command.upload.upload_event_file_command_handler import (
+    UploadEventFileCommandHandler,
+)
 from src.marketplace.event.application.event.event_projection_on_event_created_domain_event_handler import (
     EventProjectionOnEventCreatedDomainEventHandler,
 )
@@ -25,6 +27,9 @@ from src.marketplace.event.application.event.event_projection_on_event_updated_d
     EventProjectionOnEventUpdatedDomainEventHandler,
 )
 from src.marketplace.event.application.response.event_response_converter import EventResponseConverter
+from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_file_repository import (
+    SqlAlchemyFileRepository,
+)
 
 from src.marketplace.retention.application.command.new_event_available.send_email_new_event_available_command_handler import (  # noqa
     SendEmailNewEventAvailableCommandHandler,
@@ -68,6 +73,7 @@ class Repositories(containers.DeclarativeContainer):
         ElasticsearchEventResponseRepository
     )
     zone_repository: SqlAlchemyZoneRepository = providers.Factory(SqlAlchemyZoneRepository)
+    file_repository: SqlAlchemyFileRepository = providers.Factory(SqlAlchemyFileRepository)
 
 
 class Buses(containers.DeclarativeContainer):
@@ -136,9 +142,10 @@ class Handlers(containers.DeclarativeContainer):
         event_response_repository=repositories.event_response_repository,
     )
 
-    upload_file_command_handler: UploadFileCommandHandler = providers.Factory(
-        UploadFileCommandHandler,
+    upload_file_command_handler: UploadEventFileCommandHandler = providers.Factory(
+        UploadEventFileCommandHandler,
         upload_folder=os.getenv("UPLOAD_FOLDER"),
+        file_repository=repositories.file_repository,
     )
     send_email_new_event_available_command_handler: SendEmailNewEventAvailableCommandHandler = providers.Factory(
         SendEmailNewEventAvailableCommandHandler,

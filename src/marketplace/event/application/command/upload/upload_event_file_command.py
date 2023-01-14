@@ -5,7 +5,9 @@ from src.shared.domain.bus.command.command import Command
 
 
 @dataclass(frozen=True)
-class UploadFileCommand(Command):
+class UploadEventFileCommand(Command):
+    id: str
+    event_id: str
     content: bytes
     path: str
     chunk_range: Optional[int]

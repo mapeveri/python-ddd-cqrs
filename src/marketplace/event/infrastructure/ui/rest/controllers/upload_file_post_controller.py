@@ -3,7 +3,7 @@ from typing import Tuple, Any
 from flask import jsonify, request
 from flask.views import View
 
-from src.marketplace.event.application.command.upload.upload_file_command import UploadFileCommand
+from src.marketplace.event.application.command.upload.upload_event_file_command import UploadEventFileCommand
 from src.shared.infrastructure.api_controller import ApiController
 
 
@@ -21,12 +21,19 @@ class UploadFilePostController(View, ApiController):
             in: body
             required: true
             schema:
-              id: Upload file
               required:
+                - id
+                - event_id
                 - file
                 - dztotalchunkcount
                 - dzchunkbyteoffset
               properties:
+                id:
+                  type: string
+                  description: Event file id
+                event_id:
+                  type: string
+                  description: Event id
                 file:
                   type: file
                   description: The file to upload
@@ -52,7 +59,11 @@ class UploadFilePostController(View, ApiController):
             start_bytes = int(request.form["dzchunkbyteoffset"])
 
         try:
-            self.command_bus.dispatch(UploadFileCommand(file.stream.read(), filename, start_bytes, is_chunk))
+            self.command_bus.dispatch(
+                UploadEventFileCommand(
+                    request.form["id"], request.form["event_id"], file.stream.read(), filename, start_bytes, is_chunk
+                )
+            )
             code = 200
             response = jsonify({})
         except Exception as e:
