@@ -1,6 +1,6 @@
 from typing import Type
 
-from sqlalchemy import Table, Column, String, Integer, Boolean
+from sqlalchemy import Table, Column, String
 
 from src.marketplace.event.domain.file import File
 from src.marketplace.event.infrastructure.persistence.sqlalchemy.decorators.event_id_decorator import (

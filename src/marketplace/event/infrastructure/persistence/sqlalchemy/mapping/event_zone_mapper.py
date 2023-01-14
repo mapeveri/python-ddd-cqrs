@@ -15,10 +15,10 @@ from src.shared.infrastructure.persistence.sqlalchemy.decorators.price_decorator
 from src.shared.infrastructure.persistence.sqlalchemy.utils.mapper import Mapper
 
 
-class ZoneMapper(Mapper):
+class EventZoneMapper(Mapper):
     def _create_table(self) -> Table:
         return self._db_instance.Table(
-            "zone",
+            "event_zone",
             Column("id", ZoneIdDecorator, primary_key=True),
             Column("provider_zone_id", Integer, nullable=False),
             Column("capacity", Integer, nullable=False),

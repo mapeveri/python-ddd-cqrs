@@ -15,7 +15,7 @@ def configure_database(flask_app: Flask) -> SQLAlchemy:
 
     mappers: List[str] = [
         "src.marketplace.event.infrastructure.persistence.sqlalchemy.mapping.event_mapper.EventMapper",
-        "src.marketplace.event.infrastructure.persistence.sqlalchemy.mapping.zone_mapper.ZoneMapper",
+        "src.marketplace.event.infrastructure.persistence.sqlalchemy.mapping.event_zone_mapper.EventZoneMapper",
         "src.marketplace.event.infrastructure.persistence.sqlalchemy.mapping.event_file_mapper.EventFileMapper",
         "src.shared.infrastructure.persistence.sqlalchemy.mapping.outbox_mapper.OutboxMapper",
     ]
