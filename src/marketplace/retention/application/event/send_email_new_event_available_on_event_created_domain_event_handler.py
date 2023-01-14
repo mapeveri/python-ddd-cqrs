@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 from src.marketplace.event.domain.domain_events.event_created_domain_event import (
     EventCreatedDomainEvent,
 )
@@ -10,9 +8,9 @@ from src.shared.domain.bus.command.command_bus import CommandBus
 from src.shared.domain.bus.event.event_handler import EventHandler
 
 
-@dataclass
 class SendEmailNewEventAvailableOnEventCreatedDomainEventHandler(EventHandler):
-    command_bus: CommandBus
+    def __init__(self, command_bus: CommandBus) -> None:
+        self.__command_bus = command_bus
 
     def __call__(self, event: EventCreatedDomainEvent) -> None:
-        self.command_bus.dispatch(SendEmailNewEventAvailableCommand(event.title))
+        self.__command_bus.dispatch(SendEmailNewEventAvailableCommand(event.title))
