@@ -28,7 +28,7 @@ class EventsGetController(View, ApiController):
             name: ends_at
             type: string
             required: false
-        responses:
+        response:
           200:
             description: List of events
             schema:

@@ -9,7 +9,7 @@ from src.marketplace.event.domain.value_objects.event_id import EventId
 from src.marketplace.event.domain.value_objects.mode import Mode
 from src.shared.domain.bus.command.command_handler import CommandHandler
 from src.shared.domain.bus.event.event_bus import EventBus
-from src.shared.domain.utils import ensure_datetime_iso_is_valid
+from src.shared.domain.datetime_utils import ensure_datetime_iso_is_valid
 
 
 @dataclass

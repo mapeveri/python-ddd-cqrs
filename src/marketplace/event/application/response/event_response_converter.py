@@ -5,10 +5,10 @@ from src.marketplace.event.application.response.event_response import EventRespo
 
 
 class EventResponseConverter:
-    def __call__(self, events: list) -> List[EventResponse]:
-        return list(map(self._event_response, events))
+    def convert(self, data: List) -> List[EventResponse]:
+        return list(map(self.__event_response, data))
 
-    def _event_response(self, event_data: dict) -> EventResponse:
+    def __event_response(self, event_data: dict) -> EventResponse:
         event = event_data["_source"]
         start_date = datetime.datetime.fromisoformat(event["start_date"])
         end_date = datetime.datetime.fromisoformat(event["end_date"])

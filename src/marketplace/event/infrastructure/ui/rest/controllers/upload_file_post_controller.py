@@ -36,7 +36,7 @@ class UploadFilePostController(View, ApiController):
                 dzchunkbyteoffset:
                   type: number
                   description: Total chunk offset
-        responses:
+        response:
           200:
             description: Empty json
           500:

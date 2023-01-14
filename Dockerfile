@@ -9,7 +9,7 @@ ENV PYTHONPATH "${PYTHONPATH}:/var/www/html/marketplace/src"
 COPY --chown=www-data . /var/www/html/marketplace
 
 RUN ["pip3", "install", "pipenv"]
-RUN ["pipenv", "install"]
+RUN ["pipenv", "install", "-d"]
 
 EXPOSE 5000
 

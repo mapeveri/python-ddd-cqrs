@@ -24,6 +24,7 @@ from src.marketplace.event.application.event.event_projection_on_event_created_d
 from src.marketplace.event.application.event.event_projection_on_event_updated_domain_event_handler import (
     EventProjectionOnEventUpdatedDomainEventHandler,
 )
+from src.marketplace.event.application.response.event_response_converter import EventResponseConverter
 
 from src.marketplace.retention.application.command.new_event_available.send_email_new_event_available_command_handler import (  # noqa
     SendEmailNewEventAvailableCommandHandler,
@@ -83,6 +84,7 @@ class Handlers(containers.DeclarativeContainer):
     buses = providers.DependenciesContainer()
     repositories = providers.DependenciesContainer()
     services = providers.DependenciesContainer()
+    response_converters = providers.DependenciesContainer()
 
     create_event_command_handler: CreateEventCommandHandler = providers.Factory(
         CreateEventCommandHandler,
@@ -99,6 +101,7 @@ class Handlers(containers.DeclarativeContainer):
     search_events_query_handler: SearchEventsQueryHandler = providers.Factory(
         SearchEventsQueryHandler,
         event_response_repository=repositories.event_response_repository,
+        event_response_converter=response_converters.event_response_converter,
     )
     find_event_by_provider_id_query_handler: FindEventByProviderIdQueryHandler = providers.Factory(
         FindEventByProviderIdQueryHandler,
@@ -151,6 +154,12 @@ class Services(containers.DeclarativeContainer):
     )
 
 
+class ResponseConverters(containers.DeclarativeContainer):
+    config = providers.Configuration()
+
+    event_response_converter: EventResponseConverter = providers.Factory(EventResponseConverter)
+
+
 class DI(containers.DeclarativeContainer):
     config = providers.Configuration()
 
@@ -164,5 +173,12 @@ class DI(containers.DeclarativeContainer):
 
     repositories = providers.Container(Repositories)
     services = providers.Container(Services)
+    response_converters = providers.Container(ResponseConverters)
     buses = providers.Container(Buses, repositories=repositories)
-    handlers = providers.Container(Handlers, buses=buses, repositories=repositories, services=services)
+    handlers = providers.Container(
+        Handlers,
+        buses=buses,
+        repositories=repositories,
+        services=services,
+        response_converters=response_converters,
+    )

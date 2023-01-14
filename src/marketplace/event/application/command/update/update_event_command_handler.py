@@ -12,7 +12,7 @@ from src.marketplace.event.domain.zone import Zone
 from src.marketplace.event.domain.zone_repository import ZoneRepository
 from src.shared.domain.bus.command.command_handler import CommandHandler
 from src.shared.domain.bus.event.event_bus import EventBus
-from src.shared.domain.utils import ensure_datetime_iso_is_valid
+from src.shared.domain.datetime_utils import ensure_datetime_iso_is_valid
 from src.shared.domain.value_objects.price import Price
 
 

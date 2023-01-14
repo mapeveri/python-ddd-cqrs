@@ -77,7 +77,7 @@ class EventsPostController(View, ApiController):
                         numbered:
                             type: boolean
                             description: Zone is numbered
-        responses:
+        response:
           201:
             description: Event created
           500:
