@@ -94,7 +94,7 @@ class Handlers(containers.DeclarativeContainer):
 
     create_event_command_handler: CreateEventCommandHandler = providers.Factory(
         CreateEventCommandHandler,
-        repository=repositories.event_repository,
+        event_repository=repositories.event_repository,
         event_bus=buses.event_bus,
     )
     update_event_command_handler: UpdateEventCommandHandler = providers.Factory(

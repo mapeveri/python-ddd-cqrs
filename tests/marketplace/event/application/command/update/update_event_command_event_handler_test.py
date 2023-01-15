@@ -6,8 +6,6 @@ from tests.marketplace.event.event_unit_test_case import EventUnitTestCase
 
 
 class UpdateEventCommandHandlerTest(EventUnitTestCase):
-    SUT: UpdateEventCommandHandler
-
     def setUp(self):
         super(UpdateEventCommandHandlerTest, self).setUp()
         self.SUT = UpdateEventCommandHandler(self.event_repository, self.zone_repository, self.event_bus)

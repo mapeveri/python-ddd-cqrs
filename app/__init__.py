@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail
 
+from app.conf.error_handlers import configure as configure_errors
 from src.shared.infrastructure import shared_blueprint
 from src.shared.infrastructure.bus.register import configure_buses
 from src.shared.infrastructure.celery.configuration import configure_celery
@@ -34,6 +35,7 @@ def flask_app() -> Flask:
     container.wire(modules=MODULES)
     app.container = container
 
+    configure_errors(app)
     configure_buses()
 
     app.register_blueprint(event_blueprint.blueprint, url_prefix='/api/v1')

@@ -34,7 +34,7 @@ class UploadEventFileCommandHandler(CommandHandler):
     def __check_file_does_not_exists(self, file_id: FileId) -> None:
         file = self.__file_repository.find_by_id(file_id)
         if file is not None:
-            raise FileAlreadyExistsException()
+            raise FileAlreadyExistsException(file_id)
 
     def __upload_chunk_file(self, content: bytes, filename: str, chunk_range: Optional[int]) -> None:
         with open(filename, "ab+") as f:

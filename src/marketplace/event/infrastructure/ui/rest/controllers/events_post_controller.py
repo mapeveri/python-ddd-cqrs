@@ -1,12 +1,13 @@
+from http import HTTPStatus
 from typing import Tuple, Any, Dict, List
 
-from flask import jsonify, request
+from flask import request
 from flask.views import View
 
 from src.marketplace.event.application.command.create.create_event_command import (
     CreateEventCommand,
 )
-from src.marketplace.event.domain.value_objects.event_id import EventId
+from src.marketplace.event.domain.exceptions.event_already_exists_exception import EventAlreadyExistsException
 from src.marketplace.event.domain.value_objects.zone_id import ZoneId
 from src.shared.infrastructure.api_controller import ApiController
 
@@ -14,7 +15,7 @@ from src.shared.infrastructure.api_controller import ApiController
 class EventsPostController(View, ApiController):
     methods = ["POST"]
 
-    def dispatch_request(self) -> Tuple[Any, int]:
+    def dispatch_request(self, event_id: str) -> Tuple[Any, int]:
         """
         Create event
         ---
@@ -80,28 +81,30 @@ class EventsPostController(View, ApiController):
         response:
           201:
             description: Event created
+          400:
+            description: Bad request
           500:
             description: Unexpected error.
         """
+        content: Dict = request.json
+
+        zones: List[Dict] = []
+        for zone in content["zones"]:
+            zones.append(
+                {
+                    "id": ZoneId.next(),
+                    "provider_zone_id": zone["provider_zone_id"],
+                    "capacity": zone["capacity"],
+                    "price": zone["price"],
+                    "name": zone["name"],
+                    "numbered": zone["numbered"],
+                }
+            )
+
         try:
-            content: Dict = request.json
-
-            zones: List[Dict] = []
-            for zone in content["zones"]:
-                zones.append(
-                    {
-                        "id": ZoneId.next(),
-                        "provider_zone_id": zone["provider_zone_id"],
-                        "capacity": zone["capacity"],
-                        "price": zone["price"],
-                        "name": zone["name"],
-                        "numbered": zone["numbered"],
-                    }
-                )
-
             self.command_bus.dispatch(
                 CreateEventCommand(
-                    EventId.next(),
+                    event_id,
                     content["provider_id"],
                     content["mode"],
                     content["provider_organizer_company_id"],
@@ -114,11 +117,10 @@ class EventsPostController(View, ApiController):
                     zones,
                 )
             )
+        except EventAlreadyExistsException as e:
+            return {
+                "error": {"code": "EVENT_ALREADY_EXISTS", "message": str(e)},
+                "data": None,
+            }, HTTPStatus.BAD_REQUEST
 
-            response = jsonify({"data": "OK"})
-            code = 201
-        except Exception as e:
-            code = 500
-            response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
-
-        return response, code
+        return {}, HTTPStatus.CREATED

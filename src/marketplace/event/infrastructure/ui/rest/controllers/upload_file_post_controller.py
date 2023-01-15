@@ -1,9 +1,11 @@
+from http import HTTPStatus
 from typing import Tuple, Any
 
-from flask import jsonify, request
+from flask import request
 from flask.views import View
 
 from src.marketplace.event.application.command.upload.upload_event_file_command import UploadEventFileCommand
+from src.marketplace.event.domain.exceptions.file_already_exists_exception import FileAlreadyExistsException
 from src.shared.infrastructure.api_controller import ApiController
 
 
@@ -44,8 +46,10 @@ class UploadFilePostController(View, ApiController):
                   type: number
                   description: Total chunk offset
         response:
-          200:
+          201:
             description: Empty json
+          400:
+            description: Bad request
           500:
             description: Unexpected error.
         """
@@ -64,10 +68,11 @@ class UploadFilePostController(View, ApiController):
                     request.form["id"], request.form["event_id"], file.stream.read(), filename, start_bytes, is_chunk
                 )
             )
-            code = 200
-            response = jsonify({})
-        except Exception as e:
-            code = 500
-            response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
+            response = {}, HTTPStatus.CREATED
+        except FileAlreadyExistsException as e:
+            response = {
+                "error": {"code": "FILE_ALREADY_EXISTS", "message": str(e)},
+                "data": None,
+            }, HTTPStatus.BAD_REQUEST
 
-        return response, code
+        return response

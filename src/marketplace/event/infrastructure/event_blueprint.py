@@ -14,5 +14,5 @@ blueprint = Blueprint("events_routes", __name__)
 
 
 blueprint.add_url_rule("/search", view_func=EventsGetController.as_view("get_events"))
-blueprint.add_url_rule("/create-event", view_func=EventsPostController.as_view("create_event"))
+blueprint.add_url_rule("/create-event/<event_id>", view_func=EventsPostController.as_view("create_event"))
 blueprint.add_url_rule("/upload-file", view_func=UploadFilePostController.as_view("upload_file"))

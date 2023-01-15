@@ -1,7 +1,8 @@
 import datetime
+from http import HTTPStatus
 from typing import Tuple, Any, Optional
 
-from flask import jsonify, request
+from flask import request
 from flask.views import View
 
 from src.shared.infrastructure.prometheus.metrics import api_request_duration, QUANTILE
@@ -72,17 +73,14 @@ class EventsGetController(View, ApiController):
             self.__check_dates(start_date, end_date)
 
             events = self.query_bus.ask(SearchEventsQuery(start_date, end_date))
-            response = jsonify({"data": {"events": events}, "error": None})
-            code = 200
         except InvalidParameterException as e:
-            code = 400
-            response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
-        except Exception as e:
-            code = 500
-            response = jsonify({"data": None, "error": {"code": code, "message": str(e)}})
+            return {
+                "error": {"code": "INVALID_PARAMETER", "message": str(e)},
+                "data": None,
+            }, HTTPStatus.BAD_REQUEST
 
         api_request_duration.labels(endpoint="get_events").observe(QUANTILE)
-        return response, code
+        return events, HTTPStatus.OK
 
     def __check_dates(self, start_date: Optional[str], end_date: Optional[str]) -> None:
         if start_date and end_date:
