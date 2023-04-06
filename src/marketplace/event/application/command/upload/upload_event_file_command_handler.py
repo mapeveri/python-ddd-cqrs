@@ -8,11 +8,13 @@ from src.marketplace.event.domain.file_repository import FileRepository
 from src.marketplace.event.domain.value_objects.event_id import EventId
 from src.marketplace.event.domain.value_objects.file_id import FileId
 from src.shared.domain.bus.command.command_handler import CommandHandler
+from src.shared.domain.unit_of_work import UnitOfWork
 
 
 class UploadEventFileCommandHandler(CommandHandler):
-    def __init__(self, upload_folder: str, file_repository: FileRepository) -> None:
+    def __init__(self, upload_folder: str, unit_of_work: UnitOfWork, file_repository: FileRepository) -> None:
         self.__upload_folder = upload_folder
+        self.__unit_of_work = unit_of_work
         self.__file_repository = file_repository
 
     def __call__(self, command: UploadEventFileCommand) -> None:
@@ -46,5 +48,7 @@ class UploadEventFileCommandHandler(CommandHandler):
             f.write(content)
 
     def __save_file(self, file_id: FileId, filename: str, event_id: str) -> None:
-        file = File.create(file_id, filename, EventId(event_id))
-        self.__file_repository.save(file)
+        print("Voy.....")
+        with self.__unit_of_work():
+            file = File.create(file_id, filename, EventId(event_id))
+            self.__file_repository.save(file)

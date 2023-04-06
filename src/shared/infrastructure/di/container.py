@@ -91,16 +91,19 @@ class Handlers(containers.DeclarativeContainer):
     repositories = providers.DependenciesContainer()
     services = providers.DependenciesContainer()
     response_converters = providers.DependenciesContainer()
+    unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
 
     create_event_command_handler: CreateEventCommandHandler = providers.Factory(
         CreateEventCommandHandler,
         event_repository=repositories.event_repository,
+        unit_of_work=unit_of_work,
         event_bus=buses.event_bus,
     )
     update_event_command_handler: UpdateEventCommandHandler = providers.Factory(
         UpdateEventCommandHandler,
         event_repository=repositories.event_repository,
         zone_repository=repositories.zone_repository,
+        unit_of_work=unit_of_work,
         event_bus=buses.event_bus,
     )
 
@@ -146,6 +149,7 @@ class Handlers(containers.DeclarativeContainer):
         UploadEventFileCommandHandler,
         upload_folder=os.getenv("UPLOAD_FOLDER"),
         file_repository=repositories.file_repository,
+        unit_of_work=unit_of_work,
     )
     send_email_new_event_available_command_handler: SendEmailNewEventAvailableCommandHandler = providers.Factory(
         SendEmailNewEventAvailableCommandHandler,

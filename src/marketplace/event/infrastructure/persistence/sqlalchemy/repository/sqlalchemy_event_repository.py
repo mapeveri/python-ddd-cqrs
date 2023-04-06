@@ -21,8 +21,6 @@ class SqlAlchemyEventRepository(EventRepository):
 
     def save(self, event: Event) -> None:
         self.db.session.add(event)
-        self.db.session.flush()
 
         if event.zones:
             self.db.session.add_all(event.zones)
-            self.db.session.flush()

@@ -17,7 +17,6 @@ class SqlAlchemyOutboxRepository(OutboxRepository):
 
     def save(self, outbox: Outbox) -> None:
         self.db.session.add(outbox)
-        self.db.session.flush()
 
     def remove(self, outbox_id: OutboxId) -> None:
         self.db.session.query(Outbox).filter(Outbox.id == outbox_id.id).delete()

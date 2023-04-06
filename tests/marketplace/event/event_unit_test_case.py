@@ -1,10 +1,11 @@
 from typing import List
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 from src.marketplace.event.domain.event import Event
 from src.marketplace.event.domain.event_repository import EventRepository
 from src.marketplace.event.domain.zone import Zone
 from src.marketplace.event.domain.zone_repository import ZoneRepository
+from src.shared.domain.unit_of_work import UnitOfWork
 from tests.shared.infrastructure.pytest.unit_test_case import UnitTestCase
 
 
@@ -12,6 +13,7 @@ class EventUnitTestCase(UnitTestCase):
     def setUp(self):
         self.event_repository = Mock(spec=EventRepository)
         self.zone_repository = Mock(spec=ZoneRepository)
+        self.unit_of_work = MagicMock(spec=UnitOfWork)
         self.event_bus.reset_mock()
 
     def should_find_by_id(self, event: Event) -> None:

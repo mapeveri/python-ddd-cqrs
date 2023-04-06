@@ -9,11 +9,13 @@ from src.marketplace.event.domain.value_objects.mode import Mode
 from src.shared.domain.bus.command.command_handler import CommandHandler
 from src.shared.domain.bus.event.event_bus import EventBus
 from src.shared.domain.datetime_utils import ensure_datetime_iso_is_valid
+from src.shared.domain.unit_of_work import UnitOfWork
 
 
 class CreateEventCommandHandler(CommandHandler):
-    def __init__(self, event_repository: EventRepository, event_bus: EventBus) -> None:
+    def __init__(self, event_repository: EventRepository, unit_of_work: UnitOfWork, event_bus: EventBus) -> None:
         self.__event_repository = event_repository
+        self.__unit_of_work = unit_of_work
         self.__event_bus = event_bus
 
     def __call__(self, command: CreateEventCommand) -> None:
@@ -33,23 +35,24 @@ class CreateEventCommandHandler(CommandHandler):
         sold_out = command.sold_out
         zones = command.zones
 
-        event = Event.create(
-            event_id,
-            provider_id,
-            mode,
-            provider_organizer_company_id,
-            title,
-            start_date,
-            end_date,
-            sell_from,
-            sell_to,
-            sold_out,
-            zones,
-        )
+        with self.__unit_of_work():
+            event = Event.create(
+                event_id,
+                provider_id,
+                mode,
+                provider_organizer_company_id,
+                title,
+                start_date,
+                end_date,
+                sell_from,
+                sell_to,
+                sold_out,
+                zones,
+            )
 
-        self.__event_repository.save(event)
+            self.__event_repository.save(event)
 
-        self.__event_bus.publish(event.pull_domain_events())
+            self.__event_bus.publish(event.pull_domain_events())
 
     def __check_event_does_not_exists(self, event_id: EventId) -> None:
         event = self.__event_repository.find_by_id(event_id)

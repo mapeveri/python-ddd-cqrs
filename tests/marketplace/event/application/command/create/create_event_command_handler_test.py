@@ -9,7 +9,7 @@ from tests.marketplace.event.event_unit_test_case import EventUnitTestCase
 class CreateEventCommandHandlerTest(EventUnitTestCase):
     def setUp(self):
         super(CreateEventCommandHandlerTest, self).setUp()
-        self.SUT = CreateEventCommandHandler(self.event_repository, self.event_bus)
+        self.SUT = CreateEventCommandHandler(self.event_repository, self.unit_of_work, self.event_bus)
 
     def test_should_not_create_an_event_duplicated(self) -> None:
         command = CreateEventCommandMother.create()

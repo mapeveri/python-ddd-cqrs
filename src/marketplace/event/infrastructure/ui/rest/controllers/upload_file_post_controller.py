@@ -54,11 +54,12 @@ class UploadFilePostController(View, ApiController):
             description: Unexpected error.
         """
         file = request.files["file"]
+        current_chunk = int(request.form["dzchunkindex"])
         total_chunk_count = int(request.form["dztotalchunkcount"])
         filename = file.filename
 
         start_bytes = None
-        is_chunk = total_chunk_count > 1
+        is_chunk = current_chunk + 1 != total_chunk_count
         if is_chunk:
             start_bytes = int(request.form["dzchunkbyteoffset"])
 

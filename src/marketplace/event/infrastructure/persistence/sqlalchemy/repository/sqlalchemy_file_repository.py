@@ -18,4 +18,3 @@ class SqlAlchemyFileRepository(FileRepository):
 
     def save(self, file: File) -> None:
         self.db.session.add(file)
-        self.db.session.flush()
