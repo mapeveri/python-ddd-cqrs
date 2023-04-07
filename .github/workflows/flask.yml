@@ -1,0 +1,25 @@
+name: Flask
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  flasks-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.9'
+        architecture: 'x64'
+    - name: Install pipenv
+      run: pip3 install pipenv
+    - name: Install Dependencies
+      run: pipenv install -d
+    - name: Execute linter
+      run: pipenv run tox -e black && pipenv run tox -e flake8
+    - name: Execute tests
+      run: pipenv run python -m unittest discover ./tests -p '*_test.py'

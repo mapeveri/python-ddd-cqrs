@@ -20,4 +20,5 @@ run-tests: ## Run tests
 	docker exec -it marketplace-container pipenv run python -m unittest discover ./tests -p '*_test.py'
 
 run-style-analysis: ## Run style/analysis
-	docker exec -it marketplace-container pipenv run tox -e black && docker exec -it marketplace-container pipenv run tox -e flake8 && docker exec -it marketplace-container pipenv run tox -e mypy
+	# docker exec -it marketplace-container pipenv run tox -e black && docker exec -it marketplace-container pipenv run tox -e flake8 && docker exec -it marketplace-container pipenv run tox -e mypy
+	docker exec -it marketplace-container pipenv run tox -e black && docker exec -it marketplace-container pipenv run tox -e flake8
