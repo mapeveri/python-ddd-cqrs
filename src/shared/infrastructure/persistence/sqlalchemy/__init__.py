@@ -5,7 +5,7 @@ from typing import List
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import mapper as sqlalchemy_mapper, clear_mappers
+from sqlalchemy.orm import registry as sqlalchemy_registry, clear_mappers
 
 
 def configure_database(flask_app: Flask) -> SQLAlchemy:
@@ -24,6 +24,10 @@ def configure_database(flask_app: Flask) -> SQLAlchemy:
     for mapper_class in mappers:
         # noinspection PyCallingNonCallable
         entity_mapper = locate(mapper_class)(db)
-        sqlalchemy_mapper(entity_mapper.entity(), entity_mapper.table(), **entity_mapper.extra_config())
+        sqlalchemy_registry().map_imperatively(
+            entity_mapper.entity(),
+            entity_mapper.table(),
+            **entity_mapper.extra_config(),
+        )
 
     return db

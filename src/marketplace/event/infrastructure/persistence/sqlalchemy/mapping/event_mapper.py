@@ -14,7 +14,7 @@ from src.shared.infrastructure.persistence.sqlalchemy.utils.mapper import Mapper
 
 class EventMapper(Mapper):
     def _create_table(self) -> Table:
-        return self._db_instance.Table(
+        table: Table = self._db_instance.Table(
             "event",
             Column("id", EventIdDecorator, primary_key=True),
             Column("provider_id", Integer, nullable=False),
@@ -40,6 +40,10 @@ class EventMapper(Mapper):
                 unique=True,
             ),
         )
+
+        self._db_instance.Index("event_provider_id_index", table.c.provider_id)
+
+        return table
 
     def entity(self) -> Type:
         return Event
