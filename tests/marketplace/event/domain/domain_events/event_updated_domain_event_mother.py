@@ -18,22 +18,22 @@ class EventUpdatedDomainEventMother:
             faker.date_time().isoformat(),
             faker.date_time().isoformat(),
             faker.date_time().isoformat(),
-            []
+            [],
         )
 
         if data:
             event_updated = EventUpdatedDomainEvent(
-                data['id'],
-                data['provider_id'],
-                data['mode'],
-                data['provider_organizer_company_id'],
-                data['title'],
-                data['start_date'],
-                data['end_date'],
-                data['sell_from'],
-                data['sell_to'],
-                data['sold_out'],
-                data['zones']
+                data["id"],
+                data["provider_id"],
+                data["mode"],
+                data["provider_organizer_company_id"],
+                data["title"],
+                data["start_date"],
+                data["end_date"],
+                data["sell_from"],
+                data["sell_to"],
+                data["sold_out"],
+                data["zones"],
             )
 
         return event_updated

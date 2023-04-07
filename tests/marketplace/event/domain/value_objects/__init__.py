@@ -18,7 +18,7 @@ class EventIdMother:
 class ModeMother:
     @staticmethod
     def create(mode_value: str = None) -> Mode:
-        mode = Mode('online')
+        mode = Mode("online")
 
         if mode_value:
             mode = Mode(mode_value)

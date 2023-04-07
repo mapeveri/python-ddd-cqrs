@@ -16,20 +16,17 @@ from src.shared.infrastructure.persistence.sqlalchemy import configure_database
 
 def flask_app() -> Flask:
     app = Flask(__name__)
-    app.config.from_object('app.conf.config')
-    app.config['SWAGGER'] = {
-        'title': 'Events V1 API DOCS',
-        'doc_dir': './docs/v1'
-    }
+    app.config.from_object("app.conf.config")
+    app.config["SWAGGER"] = {"title": "Events V1 API DOCS", "doc_dir": "./docs/v1"}
     Swagger(app)
-    CORS(app, resource={r'/*': {'origins': app.config['ALLOWED_CLIENT_URL']}})
+    CORS(app, resource={r"/*": {"origins": app.config["ALLOWED_CLIENT_URL"]}})
     mail = Mail(app)
 
     celery = configure_celery(app)
     app.celery = celery
 
     db = configure_database(app)
-    es = Elasticsearch(app.config['ELASTICSEARCH_URL'])
+    es = Elasticsearch(app.config["ELASTICSEARCH_URL"])
 
     container = DI(app=app, db=db, es=es, celery=celery, mail=mail)
     container.wire(modules=MODULES)
@@ -38,7 +35,7 @@ def flask_app() -> Flask:
     configure_errors(app)
     configure_buses()
 
-    app.register_blueprint(event_blueprint.blueprint, url_prefix='/api/v1')
+    app.register_blueprint(event_blueprint.blueprint, url_prefix="/api/v1")
     app.register_blueprint(shared_blueprint.blueprint)
 
     return app

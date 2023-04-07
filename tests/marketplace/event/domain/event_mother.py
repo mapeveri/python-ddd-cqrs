@@ -23,22 +23,22 @@ class EventMother:
             faker.date_time(),
             faker.date_time(),
             faker.date_time(),
-            []
+            [],
         )
 
         if data:
             event = Event(
-                EventId(data['id']),
-                data['provider_id'],
-                Mode(data['mode']),
-                data['provider_organizer_company_id'],
-                data['title'],
-                data['start_date'],
-                data['end_date'],
-                data['sell_from'],
-                data['sell_to'],
-                data['sold_out'],
-                data['zones']
+                EventId(data["id"]),
+                data["provider_id"],
+                Mode(data["mode"]),
+                data["provider_organizer_company_id"],
+                data["title"],
+                data["start_date"],
+                data["end_date"],
+                data["sell_from"],
+                data["sell_to"],
+                data["sold_out"],
+                data["zones"],
             )
 
         return event

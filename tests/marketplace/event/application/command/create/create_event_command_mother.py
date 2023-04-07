@@ -17,5 +17,5 @@ class CreateEventCommandMother:
             faker.date_time().isoformat(),
             faker.date_time().isoformat(),
             faker.date_time().isoformat(),
-            []
+            [],
         )

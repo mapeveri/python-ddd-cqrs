@@ -9,10 +9,7 @@ class UpdateEventCommandHandlerTest(EventUnitTestCase):
     def setUp(self):
         super(UpdateEventCommandHandlerTest, self).setUp()
         self.SUT = UpdateEventCommandHandler(
-            self.event_repository,
-            self.zone_repository,
-            self.unit_of_work,
-            self.event_bus
+            self.event_repository, self.zone_repository, self.unit_of_work, self.event_bus
         )
 
     def test_should_update_an_event(self) -> None:
