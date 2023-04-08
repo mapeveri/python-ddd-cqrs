@@ -13,7 +13,7 @@ from src.shared.infrastructure.di.container import DI
 
 
 @inject
-def events_mapping(
+def register_domain_events(
     event_projection_on_event_created_domain_event_handler: Type[EventHandler] = Provide(
         DI.handlers.event_projection_on_event_created_domain_event_handler
     ),
