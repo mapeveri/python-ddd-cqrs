@@ -21,7 +21,6 @@ from src.marketplace.retention.application.command.new_event_available.send_emai
 from src.shared.domain.bus.command.command_bus import CommandBus
 from src.shared.domain.bus.command.command_handler import CommandHandler
 from src.shared.infrastructure.di.container import DI
-from src.shared.infrastructure.persistence.sqlalchemy.utils.transactions import transactional
 
 
 @inject
@@ -40,8 +39,8 @@ def register_commands(
         DI.handlers.send_email_new_event_available_command_handler
     ],
 ) -> None:
-    command_bus.register(CreateEventCommand, transactional(create_event_command_handler))
-    command_bus.register(UpdateEventCommand, transactional(update_event_command_handler))
+    command_bus.register(CreateEventCommand, create_event_command_handler)
+    command_bus.register(UpdateEventCommand, update_event_command_handler)
     command_bus.register(CreateEventResponseCommand, create_event_response_command_handler)
     command_bus.register(UpdateEventResponseCommand, update_event_response_command_handler)
     command_bus.register(UploadEventFileCommand, upload_file_command_handler)
