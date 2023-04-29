@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import datetime
 from abc import ABC
-from typing import Dict, Any
-from uuid import NAMESPACE_DNS, uuid5
+from typing import Dict, Any, Optional
+
+from src.shared.domain.value_objects.custom_uuid import Uuid
 
 
 class DomainEvent(ABC):
@@ -11,10 +12,10 @@ class DomainEvent(ABC):
     event_id: str
     occurred_on: str
 
-    def __init__(self, aggregate_id: str) -> None:
+    def __init__(self, aggregate_id: str, event_id: Optional[str] = None, occurred_on: Optional[str] = None) -> None:
         self.aggregate_id = aggregate_id
-        self.event_id = str(uuid5(NAMESPACE_DNS, aggregate_id))
-        self.occurred_on = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.event_id = Uuid.next() if event_id is None else event_id
+        self.occurred_on = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") if occurred_on is None else occurred_on
 
     @classmethod
     def from_primitives(cls, payload: Dict[Any, Any]) -> DomainEvent:

@@ -55,8 +55,9 @@ from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqla
 )
 from src.marketplace.retention.domain.send_email import SendEmail
 from src.marketplace.retention.infrastructure.email.flask_send_email import FlaskSendEmail
-from src.marketplace.retention.infrastructure.persistence.redis.redis_email_idempotence_repository import \
-    RedisEmailIdempotenceRepository
+from src.marketplace.retention.infrastructure.persistence.redis.redis_email_idempotence_repository import (
+    RedisEmailIdempotenceRepository,
+)
 from src.shared.domain.unit_of_work import UnitOfWork
 from src.shared.infrastructure.bus.memory_command_bus import MemoryCommandBus
 from src.shared.infrastructure.bus.memory_event_bus import MemoryEventBus

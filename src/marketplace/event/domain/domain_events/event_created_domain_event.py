@@ -31,9 +31,10 @@ class EventCreatedDomainEvent(DomainEvent):
         sell_to: datetime,
         sold_out: bool,
         zones: List[Dict[str, int, int, float, str, bool, str]],
+        event_id: Optional[str] = None,
+        occurred_on: Optional[str] = None,
     ) -> None:
-
-        super().__init__(aggregate_id)
+        super().__init__(aggregate_id, event_id, occurred_on)
 
         self.title = title
         self.provider_id = provider_id
@@ -68,6 +69,8 @@ class EventCreatedDomainEvent(DomainEvent):
             datetime.fromisoformat(payload["sell_to"]),
             payload["sold_out"],
             payload["zones"],
+            payload["event_id"],
+            payload["occurred_on"],
         )
 
     def __eq__(self, other: object) -> bool:

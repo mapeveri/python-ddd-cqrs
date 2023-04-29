@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 from src.marketplace.event.domain.domain_events.event_updated_domain_event import EventUpdatedDomainEvent
 from src.marketplace.event.domain.event import Event
 from tests.marketplace.event.domain.value_objects import EventIdMother, ModeMother
@@ -19,6 +21,8 @@ class EventUpdatedDomainEventMother:
             faker.date_time().isoformat(),
             faker.date_time().isoformat(),
             [],
+            ANY,
+            ANY,
         )
 
         if data:
@@ -34,6 +38,8 @@ class EventUpdatedDomainEventMother:
                 data["sell_to"],
                 data["sold_out"],
                 data["zones"],
+                data['event_id'],
+                data['occurred_on'],
             )
 
         return event_updated
@@ -52,4 +58,6 @@ class EventUpdatedDomainEventMother:
             event.sell_to,
             event.sold_out,
             [],
+            ANY,
+            ANY,
         )
