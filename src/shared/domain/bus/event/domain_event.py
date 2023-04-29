@@ -3,8 +3,7 @@ from __future__ import annotations
 import datetime
 from abc import ABC
 from typing import Dict, Any
-
-from src.shared.domain.value_objects.custom_uuid import Uuid
+from uuid import NAMESPACE_DNS, uuid5
 
 
 class DomainEvent(ABC):
@@ -14,7 +13,7 @@ class DomainEvent(ABC):
 
     def __init__(self, aggregate_id: str) -> None:
         self.aggregate_id = aggregate_id
-        self.event_id = Uuid.next()
+        self.event_id = str(uuid5(NAMESPACE_DNS, aggregate_id))
         self.occurred_on = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     @classmethod

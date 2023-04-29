@@ -8,6 +8,7 @@ from app.conf.di import configure_di_container
 from app.conf.elasticsearch import configure_elasticsearch
 from app.conf.error_handlers import configure as configure_errors
 from app.conf.mail import configure_mail
+from app.conf.redis import configure_redis
 from app.conf.swagger import configure_swagger
 from app.marketplace_app import MarketplaceApp
 
@@ -26,8 +27,9 @@ def flask_app() -> Flask:
 
     db = configure_database(app)
     es = configure_elasticsearch(app)
+    redis = configure_redis(app)
 
-    container = configure_di_container(app, db, es, celery, mail)
+    container = configure_di_container(app, db, es, celery, mail, redis)
     app.container = container
 
     configure_errors(app)

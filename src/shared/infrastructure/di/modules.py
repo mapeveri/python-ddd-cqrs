@@ -11,6 +11,8 @@ MODULES = [
     "src.marketplace.event.infrastructure.persistence.elasticsearch.repository.elasticsearch_event_response_repository",
     "src.marketplace.event.infrastructure.services.events_provider.process_events_provider",
     "src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository",
+    "src.shared.infrastructure.persistence.redis.redis_idempotence_repository",
+    "src.marketplace.retention.infrastructure.persistence.redis.redis_email_idempotence_repository",
     "src.shared.infrastructure.console.commands.publish_domain_events_cli",
     "src.marketplace.retention.infrastructure.email.flask_send_email",
 ]
