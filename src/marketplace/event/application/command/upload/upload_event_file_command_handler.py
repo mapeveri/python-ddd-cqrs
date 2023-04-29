@@ -48,7 +48,6 @@ class UploadEventFileCommandHandler(CommandHandler):
             f.write(content)
 
     def __save_file(self, file_id: FileId, filename: str, event_id: str) -> None:
-        print("Voy.....")
         with self.__unit_of_work():
             file = File.create(file_id, filename, EventId(event_id))
             self.__file_repository.save(file)

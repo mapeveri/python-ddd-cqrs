@@ -32,7 +32,7 @@ class ElasticsearchEventResponseRepository(EventResponseRepository):
             "max_price": prices["max_price"],
         }
 
-        self.es.update(index=self.index, id=event_id, body={"doc": doc, "doc_as_upsert": True})
+        self.es.update(index=self.index, id=event_id, body={"doc": doc, "doc_as_upsert": True, "retry_on_conflict": 2})
 
     def search(self, start_date: str, end_date: str) -> list:
         params = {"sort": "start_date:asc"}

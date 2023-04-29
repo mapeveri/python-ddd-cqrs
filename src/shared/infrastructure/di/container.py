@@ -6,6 +6,7 @@ from elasticsearch import Elasticsearch
 from flask import Flask
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
+from redis import Redis
 
 from src.marketplace.event.application.command.create.create_event_command_handler import (
     CreateEventCommandHandler,
@@ -54,10 +55,14 @@ from src.marketplace.event.infrastructure.persistence.sqlalchemy.repository.sqla
 )
 from src.marketplace.retention.domain.send_email import SendEmail
 from src.marketplace.retention.infrastructure.email.flask_send_email import FlaskSendEmail
+from src.marketplace.retention.infrastructure.persistence.redis.redis_email_idempotence_repository import (
+    RedisEmailIdempotenceRepository,
+)
 from src.shared.domain.unit_of_work import UnitOfWork
 from src.shared.infrastructure.bus.memory_command_bus import MemoryCommandBus
 from src.shared.infrastructure.bus.memory_event_bus import MemoryEventBus
 from src.shared.infrastructure.bus.memory_query_bus import MemoryQueryBus
+from src.shared.infrastructure.persistence.redis.redis_idempotence_repository import RedisIdempotenceRepository
 from src.shared.infrastructure.persistence.sqlalchemy.repository.sqlalchemy_outbox_repository import (
     SqlAlchemyOutboxRepository,
 )
@@ -68,6 +73,9 @@ class Repositories(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     outbox_repository: SqlAlchemyOutboxRepository = providers.Factory(SqlAlchemyOutboxRepository)
+    idempotence_repository: RedisIdempotenceRepository = providers.Factory(RedisIdempotenceRepository)
+    email_idempotence_repository: RedisEmailIdempotenceRepository = providers.Factory(RedisEmailIdempotenceRepository)
+
     event_repository: SqlAlchemyEventRepository = providers.Factory(SqlAlchemyEventRepository)
     event_response_repository: ElasticsearchEventResponseRepository = providers.Factory(
         ElasticsearchEventResponseRepository
@@ -133,6 +141,7 @@ class Handlers(containers.DeclarativeContainer):
     send_email_new_event_available_on_event_created_domain_event_handler: SendEmailNewEventAvailableOnEventCreatedDomainEventHandler = providers.Factory(  # noqa
         SendEmailNewEventAvailableOnEventCreatedDomainEventHandler,
         command_bus=buses.command_bus,
+        email_idempotence_repository=repositories.email_idempotence_repository,
     )
 
     create_event_response_command_handler: CreateEventResponseCommandHandler = providers.Factory(
@@ -179,6 +188,7 @@ class DI(containers.DeclarativeContainer):
     es = providers.Dependency(instance_of=Elasticsearch)
     celery = providers.Dependency(instance_of=Celery)
     mail = providers.Dependency(instance_of=Mail)
+    redis = providers.Dependency(instance_of=Redis)
 
     unit_of_work: UnitOfWork = providers.Factory(SqlAlchemyUnitOfWork)
 

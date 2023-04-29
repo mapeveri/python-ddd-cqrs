@@ -29,7 +29,7 @@ class SqlAlchemyUnitOfWorkItem(UnitOfWorkItem):
 
         if session.info.get(self.__UPPER_TRANSACTION_SESSION_KEY) is None:
             self.__guard_current_session_is_not_dirty(session)
-            self.__transaction = session.transaction
+            self.__transaction = session.get_transaction()
             self.__set_current_transaction_as_upper_in_session(session)
             return
 
@@ -39,7 +39,7 @@ class SqlAlchemyUnitOfWorkItem(UnitOfWorkItem):
         session.info[self.__UPPER_TRANSACTION_SESSION_KEY] = self.__transaction
 
     def __guard_current_session_is_not_dirty(self, session: SignallingSession) -> None:
-        is_upper_level_transaction = session.transaction.parent is None
+        is_upper_level_transaction = session.get_transaction().parent is None
         session_has_been_modified = self.__session_has_been_modified(session)
         if is_upper_level_transaction is True and session_has_been_modified is True:
             raise DirtySQLAlchemySessionBeforeUnitOfWorkInitException()
