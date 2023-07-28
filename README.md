@@ -39,10 +39,10 @@ To consume events from rabbitmq:
 
     make run-consume-events
 
-Events provider
----------------
+Get events from provider
+------------------------
 
-To get events from provider:
+To get events from provider run the next command:
 
     make run-events-provider
 
