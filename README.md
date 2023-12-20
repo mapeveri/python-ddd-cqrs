@@ -60,7 +60,8 @@ Monitoring
 Access to Grafana and Prometheus:
 
     grafana: http://localhost:3000/
-        user: admin
-        password: pass@123
+    
+    user: admin
+    password: pass@123
 
     prometheus: http://localhost:9999/
