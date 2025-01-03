@@ -4,7 +4,7 @@ python-ddd-cqrs
 Use
 ---
 
-To start environment using makefile:
+To start the environment using makefile:
 
     make run
 
