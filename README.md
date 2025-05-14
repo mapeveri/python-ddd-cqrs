@@ -31,18 +31,18 @@ To run celery worker and beat:
 Domain events
 -------------
 
-To publish outbox events to rabbitmq:
+To publish outbox domain events to rabbitmq:
 
     make run-publish-events
 
-To consume events from rabbitmq:
+To consume domain events from rabbitmq:
 
     make run-consume-events
 
-Get events from provider
-------------------------
+Get events/venues from third party provider
+-------------------------------------------
 
-To get events from provider run the next command:
+To get events/venus from third party provider run the next command:
 
     make run-events-provider
 
