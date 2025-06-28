@@ -11,7 +11,7 @@ class Price:
     @staticmethod
     def __check_price(amount: float) -> None:
         if amount < 0:
-            raise PriceException("Invalid price")
+            raise PriceException()
 
     def value(self) -> float:
         return self.amount
