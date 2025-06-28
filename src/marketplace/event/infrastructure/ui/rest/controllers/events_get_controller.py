@@ -88,4 +88,4 @@ class EventsGetController(View, ApiController):
                 datetime.datetime.fromisoformat(start_date.rstrip("Z") + "+00:00")
                 datetime.datetime.fromisoformat(end_date.rstrip("Z") + "+00:00")
             except Exception:
-                raise InvalidParameterException("Invalid value in parameters")
+                raise InvalidParameterException()
