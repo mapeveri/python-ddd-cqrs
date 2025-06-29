@@ -15,7 +15,7 @@ services:
             - db
 
     db:
-        image: postgres
+        image: postgres:15
         environment:
             POSTGRES_DB: ${POSTGRES_DATABASE}
             POSTGRES_HOST: ${POSTGRES_HOST}
